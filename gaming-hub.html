@@ -13,7 +13,15 @@ html.embedded,html.embedded body{background:transparent}
 body{margin:0;color:#fff;font-family:"Google Sans","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font-family:inherit;color:inherit}
 p{margin:0}
-
+.ss-map-option.is-selected::after {
+    content: "";
+    margin-left: auto;
+    width: 6px;
+    height: 0.1px;
+    border-radius: 50%;
+    background: #e7ed8b;
+    box-shadow: 0 0 8px rgb(215 223 31 / .8);
+}
 .hub{--greet-h:56px;display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr) 230px;gap:22px;align-items:start;padding:20px 8px 56px}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .col-left{padding-bottom:44px}
