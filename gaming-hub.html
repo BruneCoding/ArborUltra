@@ -1,1 +1,559 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Arbor Gaming Hub</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{color-scheme:dark;background:#0b0b0b}
+html.embedded,html.embedded body{background:transparent}
+body{margin:0;color:#fff;font-family:"Google Sans","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font-family:inherit;color:inherit}
+p{margin:0}
+
+.hub{--greet-h:56px;display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr) 230px;gap:22px;align-items:start;padding:20px 8px 56px}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.col-left{padding-bottom:44px}
+.spacer{flex:none;height:var(--greet-h)}
+
+.greeting{flex:none;display:flex;align-items:flex-end;height:var(--greet-h);padding:0 4px}
+.greeting-line{display:inline-flex;align-items:baseline;gap:8px;font-size:25px;font-weight:650;letter-spacing:-.8px;line-height:1.2;white-space:nowrap}
+.greeting-morph{display:inline-grid;position:relative;width:max-content;filter:url(#morph-threshold)}
+.greeting-morph span{grid-area:1/1;display:block;white-space:nowrap;will-change:filter,opacity;color:#f5f5f7}
+.greeting-name{color:#d7df1f;font-weight:750;text-shadow:0 0 18px rgb(215 223 31/.12)}
+
+.ss-card{position:relative;width:100%;aspect-ratio:1738/700;min-height:240px;overflow:visible;isolation:isolate;container-type:inline-size;border-radius:40px;color:#fff;background:#181a09;box-shadow:0 18px 55px rgb(0 0 0/.2);--card-mx:50%;--card-my:50%}
+.ss-background{position:absolute;inset:0;z-index:-4;display:block;width:100%;height:100%;border-radius:inherit;object-fit:cover;object-position:center;opacity:.87;pointer-events:none;user-select:none}
+.ss-background-wash{position:absolute;inset:0;z-index:-3;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,rgb(20 22 4/.94) 0%,rgb(20 22 4/.82) 25%,rgb(20 22 4/.57) 45%,rgb(20 22 4/.14) 68%,transparent 100%),linear-gradient(0deg,rgb(12 14 3/.4),transparent 40%,rgb(12 14 3/.08))}
+.ss-background-vignette{position:absolute;inset:0;z-index:-2;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 80px rgb(0 0 0/.2),inset 0 1px 0 rgb(255 255 255/.07)}
+.ss-ambient{position:absolute;z-index:-1;width:36%;aspect-ratio:1;border-radius:50%;pointer-events:none;filter:blur(65px);opacity:.13;background:#d7df1f;animation:ambient-drift 12s ease-in-out infinite alternate}
+.ss-ambient-one{top:-35%;left:8%}
+.ss-ambient-two{right:18%;bottom:-50%;opacity:.09;animation-delay:-5s}
+@keyframes ambient-drift{from{transform:translate3d(-3%,-2%,0) scale(.95)}to{transform:translate3d(8%,7%,0) scale(1.13)}}
+.ss-character{position:absolute;z-index:0;right:0;bottom:0;display:block;width:auto;height:110%;max-width:60%;object-fit:contain;object-position:right bottom;transform:translate(-4.5%,6%) scale(1.03);transform-origin:right bottom;filter:sepia(.1) drop-shadow(0 10px 30px rgb(0 0 0/.45)) brightness(.8) saturate(.9);pointer-events:none;user-select:none}
+.ss-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:space-between;padding:5% 0 5% 5%;pointer-events:none}
+.ss-copy{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;width:50%;height:100%;min-width:0}
+.ss-logo{display:block;width:76%;max-height:38%;height:auto;object-fit:contain;object-position:left center;filter:drop-shadow(0 5px 12px rgb(0 0 0/.18))}
+.ss-description{width:84%;color:rgb(255 255 255/.88);font-size:clamp(11px,2.1cqw,15px);line-height:1.45;font-weight:400;letter-spacing:-.015em;text-shadow:0 2px 8px rgb(0 0 0/.35)}
+.ss-actions{position:relative;z-index:10;display:flex;align-items:center;gap:1.6cqw;width:max-content;max-width:100%;pointer-events:auto}
+.ss-card-edge{position:absolute;inset:0;z-index:8;border:1px solid rgb(255 255 255/.025);border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgb(255 255 255/.07),inset 0 -1px 0 rgb(0 0 0/.12);background:radial-gradient(260px circle at var(--card-mx) var(--card-my),rgb(255 255 255/.02),transparent 100%)}
+
+.fx{--mx:50%;--my:50%;--prox:0;position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;color:#fff;background:radial-gradient(circle at var(--mx) var(--my),rgb(215 223 31/.13),transparent 65%),linear-gradient(135deg,rgb(255 255 255/.095),rgb(255 255 255/.018));border:1px solid rgb(225 235 95/.3);border-radius:999px;box-shadow:inset 0 1px 0 rgb(255 255 255/.19),inset 0 -1px 0 rgb(255 255 255/.025),0 5px 18px rgb(0 0 0/.22);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);cursor:pointer;-webkit-tap-highlight-color:transparent;text-decoration:none;transition:border-color .3s ease,box-shadow .3s ease,transform .25s cubic-bezier(.2,.8,.2,1),background .3s ease}
+.fx::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle 75px at var(--mx) var(--my),rgb(246 250 151/.95),rgb(215 223 31/.35) 22%,transparent 70%);opacity:calc(var(--prox)*.22);transition:opacity .3s ease}
+.fx:focus-visible,.ss-map-option:focus-visible{outline:2px solid rgb(231 239 112/.9);outline-offset:2px}
+
+.ss-play{min-width:100px;padding:1.15cqw 3.2cqw 1.15cqw 2cqw;gap:1cqw;font-size:clamp(12px,2.1cqw,17px);font-weight:650;letter-spacing:-.025em;line-height:1;white-space:nowrap}
+.ss-play-icon{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:max(12px,2.6cqw);height:max(12px,2.6cqw);color:#e6ed83;filter:drop-shadow(0 0 7px rgb(215 223 31/.28));transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s ease}
+.ss-play-icon svg{width:100%;height:100%}
+.ss-play-text{position:relative;z-index:2}
+.ss-play-shine{position:absolute;top:-100%;bottom:-100%;left:-60%;width:28%;z-index:2;opacity:0;transform:rotate(22deg);background:linear-gradient(90deg,transparent,rgb(255 255 255/.16),rgb(239 245 153/.36),rgb(255 255 255/.1),transparent);filter:blur(2px);pointer-events:none}
+.ss-play:hover .ss-play-shine{animation:hover-shine .85s ease-out 1}
+@keyframes hover-shine{0%{left:-60%;opacity:0}15%{opacity:.9}100%{left:135%;opacity:0}}
+.ss-play:hover,.ss-map-trigger:hover{border-color:rgb(235 242 122/.72);box-shadow:inset 0 1px 0 rgb(255 255 255/.24),0 8px 28px rgb(0 0 0/.3),0 0 22px rgb(215 223 31/.12);transform:translateY(-2px)}
+.ss-play:hover .ss-play-icon{transform:translateX(2px) scale(1.08);filter:drop-shadow(0 0 9px rgb(215 223 31/.55))}
+.ss-play:active,.ss-map-trigger:active{transform:translateY(0) scale(.975);transition-duration:.08s}
+
+.ss-map-wrap{position:relative;z-index:11;display:inline-flex;flex-shrink:0}
+.ss-map-trigger{gap:1cqw;padding:1.15cqw 1.65cqw;font-size:clamp(11px,1.9cqw,15px);font-weight:500;line-height:1;white-space:nowrap;opacity:.835}
+.ss-map-clock{position:relative;z-index:2;width:max(12px,2.3cqw);height:max(12px,2.3cqw);color:#e0e77c;filter:drop-shadow(0 0 5px rgb(215 223 31/.18))}
+.ss-map-label{position:relative;z-index:2}
+.ss-map-chevron{position:relative;z-index:2;width:max(10px,1.8cqw);height:max(10px,1.8cqw);color:rgb(255 255 255/.65);transition:transform .25s ease,color .25s ease}
+.ss-map-trigger[aria-expanded="true"] .ss-map-chevron{transform:rotate(180deg);color:#e7ed8b}
+
+.ss-map-menu{position:absolute;top:calc(100% + 12px);left:0;z-index:100;display:flex;flex-direction:column;gap:2px;width:clamp(190px,21cqw,250px);max-height:min(70vh,440px);margin:0;padding:8px;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:20px;background:transparent;box-shadow:none;backdrop-filter:blur(24px) saturate(150%) brightness(.5);-webkit-backdrop-filter:blur(24px) saturate(150%) brightness(.5);transform-origin:top left;animation:menu-in .22s cubic-bezier(.2,.8,.2,1);scrollbar-width:thin;scrollbar-color:rgb(255 255 255/.25) transparent}
+.ss-map-menu.up{top:auto;bottom:calc(100% + 12px);transform-origin:bottom left}
+.ss-map-menu[hidden]{display:none}
+.ss-map-menu::-webkit-scrollbar{width:6px}
+.ss-map-menu::-webkit-scrollbar-thumb{background:rgb(255 255 255/.25);border-radius:99px}
+@keyframes menu-in{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ss-map-option{display:flex;align-items:center;gap:11px;width:100%;margin:0;padding:10px 12px;border:0;border-radius:13px;background:transparent;color:rgb(255 255 255/.8);text-align:left;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .18s ease,color .18s ease}
+.ss-pin{flex:none;width:16px;height:16px;color:rgb(255 255 255/.45);transition:color .2s ease,filter .2s ease}
+.ss-map-option:hover,.ss-map-option:focus-visible{background:rgb(255 255 255/.1);color:#fff}
+.ss-map-option:hover .ss-pin{color:rgb(255 255 255/.9)}
+.ss-map-option.is-selected{color:#fff;background:rgb(255 255 255/.06)}
+.ss-map-option.is-selected .ss-pin{color:#e7ed8b;filter:drop-shadow(0 0 6px rgb(215 223 31/.7))}
+.ss-map-option.is-selected::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:50%;background:#e7ed8b;box-shadow:0 0 8px rgb(215 223 31/.8)}
+
+.modes{display:flex;flex-direction:column;gap:12px}
+.mode{justify-content:flex-start;gap:14px;width:100%;padding:14px 16px;border-radius:22px;border-color:rgb(225 235 95/.16);text-align:left}
+.mode>*{position:relative;z-index:1}
+.mode:not([aria-disabled="true"]):hover{border-color:rgb(235 242 122/.5);box-shadow:inset 0 1px 0 rgb(255 255 255/.18),0 10px 28px rgb(0 0 0/.3),0 0 22px rgb(215 223 31/.1);transform:translateY(-2px)}
+.mode:not([aria-disabled="true"]):active{transform:translateY(0) scale(.985);transition-duration:.08s}
+.mode[aria-disabled="true"]{cursor:default;opacity:.72}
+.mode-icon{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;color:#e6ed83;background:rgb(215 223 31/.1);border:1px solid rgb(225 235 95/.18);filter:drop-shadow(0 0 7px rgb(215 223 31/.18))}
+.mode-icon svg{width:22px;height:22px}
+.mode-text{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.mode-title{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.mode-sub{font-size:12px;line-height:1.2;color:rgb(255 255 255/.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mode-chevron{flex:none;width:18px;height:18px;color:rgb(255 255 255/.55);transition:transform .25s ease,color .25s ease}
+.mode:hover .mode-chevron{transform:translateX(3px);color:#e7ed8b}
+.mode-badge{flex:none;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:600;color:rgb(255 255 255/.6);background:rgb(255 255 255/.07)}
+
+.panel{padding:16px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012));box-shadow:inset 0 1px 0 rgb(255 255 255/.06),0 8px 24px rgb(0 0 0/.2)}
+.panel-title{margin:0 0 10px;font-size:13px;font-weight:600;color:rgb(255 255 255/.55)}
+.panel-main{font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.panel-sub{margin-top:4px;font-size:12px;color:rgb(255 255 255/.5);line-height:1.35}
+.panel-soon{border-style:dashed;border-color:rgb(225 235 95/.18);background:transparent;box-shadow:none}
+.panel-wide{padding:22px 18px}
+
+@media(max-width:1100px){
+  .hub{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+  .col-side{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
+  .col-side .spacer{display:none}
+  .col-side .panel{flex:1 1 220px}
+}
+@media(max-width:760px){
+  .hub{grid-template-columns:minmax(0,1fr);gap:8px;padding-top:12px}
+  .col-middle .spacer{display:none}
+  .greeting-line{font-size:21px}
+  .ss-card{border-radius:25px}
+  .ss-content{padding:6% 0 6% 5%}
+  .ss-copy{width:61%}
+  .ss-logo{width:85%}
+  .ss-description{width:92%}
+  .ss-play{min-width:0;padding:10px 17px 10px 12px;gap:7px}
+  .ss-map-trigger{gap:6px;padding:10px 11px}
+  .ss-actions{gap:8px}
+  .ss-character{max-width:57%}
+  .ss-map-menu{width:190px;max-height:50vh;padding:6px;border-radius:16px}
+  .ss-map-option{padding:10px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+  .ss-play-shine,.ss-ambient{display:none}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="morph-threshold" x="-30%" y="-100%" width="160%" height="300%">
+      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 255 -140"></feColorMatrix>
+    </filter>
+  </defs>
+</svg>
+
+<main class="hub">
+  <section class="col col-left" aria-label="Featured game">
+    <div class="greeting">
+      <div class="greeting-line">
+        <div class="greeting-morph"><span id="g1"></span><span id="g2"></span></div>
+        <span class="greeting-name" id="gname">there.</span>
+      </div>
+    </div>
+
+    <div class="ss-card" id="ss-card">
+      <img class="ss-background" data-src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
+      <div class="ss-background-wash"></div>
+      <div class="ss-background-vignette"></div>
+      <div class="ss-ambient ss-ambient-one"></div>
+      <div class="ss-ambient ss-ambient-two"></div>
+      <img class="ss-character" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
+      <div class="ss-content">
+        <div class="ss-copy">
+          <img class="ss-logo" data-src="https://i.ibb.co/R4Mm1TwN/Surfers-Logo-from-Photopea.png" alt="Subway Surfers">
+          <p class="ss-description">Jump over trains while being chased by a cop idk. Probably some dark, big brain lore in there...</p>
+          <div class="ss-actions">
+            <button class="ss-play fx" type="button">
+              <span class="ss-play-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
+              </span>
+              <span class="ss-play-text">Play</span>
+              <span class="ss-play-shine"></span>
+            </button>
+            <div class="ss-map-wrap">
+              <button class="ss-map-trigger fx" type="button" aria-expanded="false" aria-haspopup="true">
+                <svg class="ss-map-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                <span class="ss-map-label">Poki</span>
+                <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 14 5-5 5 5"></path></svg>
+              </button>
+              <div class="ss-map-menu" role="menu" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ss-card-edge"></div>
+    </div>
+  </section>
+
+  <section class="col col-middle" aria-label="Game modes">
+    <div class="spacer"></div>
+    <div class="modes">
+      <button class="mode fx" type="button" data-mode="horror">
+        <span class="mode-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h.01"></path><path d="M15 10h.01"></path><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"></path></svg>
+        </span>
+        <span class="mode-text">
+          <span class="mode-title">Horror</span>
+          <span class="mode-sub">Subway Horror, chapter 1</span>
+        </span>
+        <svg class="mode-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+      </button>
+
+      <button class="mode fx" type="button" data-mode="multiplayer" aria-disabled="true">
+        <span class="mode-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </span>
+        <span class="mode-text">
+          <span class="mode-title">Multiplayer</span>
+          <span class="mode-sub">Run with friends</span>
+        </span>
+        <span class="mode-badge">Soon</span>
+      </button>
+
+      <button class="mode fx" type="button" data-mode="placeholder" aria-disabled="true">
+        <span class="mode-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+        </span>
+        <span class="mode-text">
+          <span class="mode-title">New mode</span>
+          <span class="mode-sub">Not announced yet</span>
+        </span>
+        <span class="mode-badge">Soon</span>
+      </button>
+    </div>
+
+    <div class="panel panel-soon panel-wide">
+      <p class="panel-main">More games on the way</p>
+      <p class="panel-sub">Subway Surfers is the only game here for now.</p>
+    </div>
+  </section>
+
+  <aside class="col col-side" aria-label="Sidebar">
+    <div class="spacer"></div>
+    <div class="panel">
+      <h2 class="panel-title">Last played</h2>
+      <p class="panel-main" id="last-played">Nothing yet</p>
+      <p class="panel-sub" id="last-played-sub">Hit play to get started</p>
+    </div>
+    <div class="panel panel-soon">
+      <h2 class="panel-title">Stats</h2>
+      <p class="panel-sub">Playtime and achievements will show up here.</p>
+    </div>
+  </aside>
+</main>
+
+<script>
+(() => {
+  const POKI_URL = "https://poki.com/en/g/subway-surfers";
+  const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
+  const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
+  const STORE_KEY = "arborHubLastPlayed";
+  const MAPS = [
+    ["Poki", null],
+    ["Hong Kong", "193-hongkong"],
+    ["Singapore", "177-singapore"],
+    ["Tokyo", "184-tokyo"],
+    ["Seoul", "1103-seoul"],
+    ["Bali", "1106-bali"],
+    ["Mumbai", "189-mumbai"],
+    ["Marrakesh", "195-marrakesh"],
+    ["Cairo", "1116-cairo"],
+    ["Venice", "199-venice"],
+    ["Iceland", "1117-iceland"],
+    ["Havana", "190-havana"],
+    ["New York", "191-newyork"],
+    ["Atlanta", "198-atlanta"]
+  ];
+  const THEMES = Object.fromEntries(MAPS);
+  const PIN = '<svg class="ss-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
+
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const openTab = url => window.open(url, "_blank", "noopener");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!window.ARBOR_HUB) {
+    document.querySelectorAll("img[data-src]").forEach(img => { img.src = img.dataset.src; });
+  }
+
+  const readName = () => {
+    let name = "";
+    if (window.ARBOR_HUB && window.ARBOR_HUB.username) {
+      name = window.ARBOR_HUB.username;
+    } else if (location.hash.length > 1) {
+      try { name = decodeURIComponent(location.hash.slice(1)); } catch { name = location.hash.slice(1); }
+    }
+    name = String(name).trim();
+    return name ? name.split(/\s+/)[0] : "there";
+  };
+
+  let userName = readName();
+
+  const lastTitle = $("#last-played");
+  const lastSub = $("#last-played-sub");
+
+  const renderLast = () => {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch {}
+    if (saved && saved.title) {
+      lastTitle.textContent = saved.title;
+      lastSub.textContent = saved.detail || "";
+    } else {
+      lastTitle.textContent = "Nothing yet";
+      lastSub.textContent = "Hit play to get started";
+    }
+  };
+
+  const saveLast = (title, detail) => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ title, detail })); } catch {}
+    renderLast();
+  };
+
+  renderLast();
+
+  const trigger = $(".ss-map-trigger");
+  const menu = $(".ss-map-menu");
+  const label = $(".ss-map-label");
+  const playBtn = $(".ss-play");
+  let currentMap = "Poki";
+
+  MAPS.forEach(([name]) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "ss-map-option" + (name === currentMap ? " is-selected" : "");
+    option.setAttribute("role", "menuitemradio");
+    option.setAttribute("aria-checked", String(name === currentMap));
+    option.dataset.map = name;
+    option.innerHTML = PIN + "<span>" + name + "</span>";
+    menu.appendChild(option);
+  });
+
+  const options = [...menu.children];
+
+  const setOpen = open => {
+    if (open) {
+      menu.classList.remove("up");
+      menu.hidden = false;
+      const rect = trigger.getBoundingClientRect();
+      const below = window.innerHeight - rect.bottom;
+      if (below < menu.offsetHeight + 16 && rect.top > below) menu.classList.add("up");
+      const selected = $(".is-selected", menu);
+      if (selected) selected.scrollIntoView({ block: "nearest" });
+    } else {
+      menu.hidden = true;
+    }
+    trigger.setAttribute("aria-expanded", String(open));
+  };
+
+  trigger.addEventListener("click", event => {
+    event.stopPropagation();
+    setOpen(menu.hidden);
+  });
+
+  options.forEach((option, index) => {
+    option.addEventListener("click", () => {
+      currentMap = option.dataset.map;
+      label.textContent = currentMap;
+      options.forEach(item => {
+        const selected = item === option;
+        item.classList.toggle("is-selected", selected);
+        item.setAttribute("aria-checked", String(selected));
+      });
+      setOpen(false);
+      trigger.focus();
+    });
+
+    option.addEventListener("keydown", event => {
+      let next = index;
+      if (event.key === "ArrowDown") next++;
+      else if (event.key === "ArrowUp") next--;
+      else return;
+      event.preventDefault();
+      options[(next + options.length) % options.length].focus();
+    });
+  });
+
+  document.addEventListener("click", event => {
+    if (!$(".ss-map-wrap").contains(event.target)) setOpen(false);
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !menu.hidden) {
+      setOpen(false);
+      trigger.focus();
+    }
+  });
+
+  playBtn.addEventListener("click", () => {
+    const theme = THEMES[currentMap];
+    openTab(theme == null ? POKI_URL : THEME_BASE + theme);
+    saveLast("Subway Surfers", "Map: " + currentMap);
+  });
+
+  document.querySelectorAll(".mode").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.getAttribute("aria-disabled") === "true") return;
+      if (button.dataset.mode === "horror") {
+        openTab(HORROR_URL);
+        saveLast("Subway Horror", "Chapter 1");
+      }
+    });
+  });
+
+  document.querySelectorAll(".fx").forEach(element => {
+    element.addEventListener("pointermove", event => {
+      const rect = element.getBoundingClientRect();
+      element.style.setProperty("--mx", (event.clientX - rect.left) + "px");
+      element.style.setProperty("--my", (event.clientY - rect.top) + "px");
+      element.style.setProperty("--prox", "1");
+    });
+    element.addEventListener("pointerleave", () => {
+      element.style.setProperty("--prox", "0");
+      element.style.setProperty("--mx", "50%");
+      element.style.setProperty("--my", "50%");
+    });
+  });
+
+  const card = $("#ss-card");
+  card.addEventListener("pointermove", event => {
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty("--card-mx", (event.clientX - rect.left) + "px");
+    card.style.setProperty("--card-my", (event.clientY - rect.top) + "px");
+  });
+  card.addEventListener("pointerleave", () => {
+    card.style.setProperty("--card-mx", "50%");
+    card.style.setProperty("--card-my", "50%");
+  });
+
+  const g1 = $("#g1");
+  const g2 = $("#g2");
+  const gName = $("#gname");
+  const MORPH = 1;
+  const COOLDOWN = 1.5;
+
+  const buildGreetings = () => {
+    const hour = new Date().getHours();
+    const first = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    return [
+      first,
+      "Welcome back",
+      "Hello again",
+      "Ready to go?",
+      "Greetings",
+      "Wsp",
+      "What's good?",
+      "Welcome to the gng",
+      "Yo, welcome back",
+      "Ayy, you're back",
+      "Hey there",
+      "Yo!",
+      "Sup?",
+      "Wassup gang",
+      "Welcome back, legend",
+      "Ayo, welcome back",
+      "What's the move?",
+      "We meet again",
+      "Good to see you",
+      "The gang's all here",
+      "Yo",
+      "How we doing?",
+      "What's poppin'?",
+      "Ayyy",
+      "Well, well, well",
+      "You're back!",
+      "Welcome aboard",
+      "Ready when you are",
+      "Oh, it's you again",
+      "Hey",
+      "Wsg",
+      "We back",
+      "Locked in?",
+      "Another day, another W",
+      "Cookin?",
+      "Yo yo yo",
+      "Chillin'?",
+      "Big welcome back",
+      "Back in business",
+      "How's life?",
+      "Ayo gang",
+      "What's happening,",
+      "Sup gang?",
+      "W mans",
+      "Alright, let's roll"
+    ];
+  };
+
+  const greetings = buildGreetings();
+  let index = greetings.length - 1;
+  let cooldown = COOLDOWN;
+  let morph = 0;
+  let waiting = true;
+  let advance = false;
+  let lastTime = performance.now();
+
+  const paint = () => {
+    g1.textContent = greetings[index];
+    g2.textContent = greetings[(index + 1) % greetings.length];
+    gName.textContent = userName + ".";
+  };
+
+  const setMorph = fraction => {
+    const f = Math.max(0, Math.min(1, fraction));
+    const inverse = 1 - f;
+    g2.style.filter = "blur(" + Math.min(8 / f - 8, 100) + "px)";
+    g2.style.opacity = Math.pow(f, 0.4) * 100 + "%";
+    g1.style.filter = "blur(" + Math.min(8 / inverse - 8, 100) + "px)";
+    g1.style.opacity = Math.pow(inverse, 0.4) * 100 + "%";
+  };
+
+  const resetMorph = () => {
+    g2.style.filter = "";
+    g2.style.opacity = "100%";
+    g1.style.filter = "";
+    g1.style.opacity = "0%";
+  };
+
+  const tick = now => {
+    const dt = Math.min((now - lastTime) / 1000, 0.05);
+    lastTime = now;
+
+    if (waiting) {
+      resetMorph();
+      cooldown -= dt;
+      if (cooldown <= 0) {
+        if (advance) {
+          index = (index + 1) % greetings.length;
+          paint();
+          advance = false;
+        }
+        waiting = false;
+        morph = 0;
+      }
+    } else {
+      morph += dt;
+      setMorph(morph / MORPH);
+      if (morph >= MORPH) {
+        waiting = true;
+        cooldown = COOLDOWN;
+        advance = true;
+      }
+    }
+
+    requestAnimationFrame(tick);
+  };
+
+  paint();
+  resetMorph();
+  if (!reducedMotion) requestAnimationFrame(tick);
+
+  const setUser = name => {
+    userName = String(name || "").trim().split(/\s+/)[0] || "there";
+    gName.textContent = userName + ".";
+  };
+
+  window.addEventListener("hashchange", () => {
+    if (!window.ARBOR_HUB) setUser(readName());
+  });
+
+  window.addEventListener("message", event => {
+    if (event.source !== window.parent) return;
+    const data = event.data;
+    if (data && data.type === "arbor-user") setUser(data.username);
+  });
+})();
+</script>
+</body>
+</html>
