@@ -13,6 +13,18 @@ html.embedded,html.embedded body{background:transparent}
 body{margin:0;color:#fff;font-family:"Google Sans","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font-family:inherit;color:inherit}
 p{margin:0}
+
+    *::-webkit-scrollbar {
+        display: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        background: transparent !important;
+    }
+
+    * {
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
 .ss-map-option.is-selected::after {
     content: "";
     margin-left: auto;
