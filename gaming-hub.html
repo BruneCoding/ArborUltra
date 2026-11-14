@@ -7,8 +7,8 @@
 <title>Arbor Gaming Hub</title>
 <style>
 *,*::before,*::after{box-sizing:border-box}
-html{color-scheme:dark;background:#0b0b0b}
-html.embedded,html.embedded body{background:transparent}
+html,body{background:#0a0a0a}
+html{color-scheme:dark}
 body{margin:0;color:#fff;font-family:"Google Sans","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font-family:inherit;color:inherit}
 p{margin:0}
@@ -41,6 +41,8 @@ p{margin:0}
 .ss-description{width:84%;color:rgb(255 255 255/.88);font-size:clamp(11px,2.1cqw,15px);line-height:1.45;font-weight:400;letter-spacing:-.015em;text-shadow:0 2px 8px rgb(0 0 0/.35)}
 .ss-actions{position:relative;z-index:10;display:flex;align-items:center;gap:1.6cqw;width:max-content;max-width:100%;pointer-events:auto}
 .ss-card-edge{position:absolute;inset:0;z-index:8;border:1px solid rgb(255 255 255/.025);border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgb(255 255 255/.07),inset 0 -1px 0 rgb(0 0 0/.12);background:radial-gradient(260px circle at var(--card-mx) var(--card-my),rgb(255 255 255/.02),transparent 100%)}
+.ss-launches{margin:-8px 0 0;padding:0 22px;font-size:11px;letter-spacing:.01em;color:rgb(255 255 255/.38);opacity:0;transition:opacity .3s ease;pointer-events:none}
+.ss-card:hover + .ss-launches{opacity:1}
 
 .fx{--mx:50%;--my:50%;--prox:0;position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;color:#fff;background:radial-gradient(circle at var(--mx) var(--my),rgb(215 223 31/.13),transparent 65%),linear-gradient(135deg,rgb(255 255 255/.095),rgb(255 255 255/.018));border:1px solid rgb(225 235 95/.3);border-radius:999px;box-shadow:inset 0 1px 0 rgb(255 255 255/.19),inset 0 -1px 0 rgb(255 255 255/.025),0 5px 18px rgb(0 0 0/.22);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);cursor:pointer;-webkit-tap-highlight-color:transparent;text-decoration:none;transition:border-color .3s ease,box-shadow .3s ease,transform .25s cubic-bezier(.2,.8,.2,1),background .3s ease}
 .fx::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle 75px at var(--mx) var(--my),rgb(246 250 151/.95),rgb(215 223 31/.35) 22%,transparent 70%);opacity:calc(var(--prox)*.22);transition:opacity .3s ease}
@@ -82,80 +84,27 @@ p{margin:0}
 .mode-bg{position:absolute;inset:0;z-index:0;border-radius:inherit;background:#181a09;box-shadow:0 10px 30px rgb(0 0 0/.22)}
 .mode-bg::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08),inset 0 1px 0 rgb(255 255 255/.08)}
 .mode-bg img{position:absolute;display:block;pointer-events:none;user-select:none}
-.mode-art-bg{inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
-.mode-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgb(14 16 4/.86) 0%,rgb(14 16 4/.6) 45%,rgb(14 16 4/.12) 100%),linear-gradient(0deg,rgb(8 10 2/.35),transparent 55%)}
-.mode-train {
-    right: -7%;
-    position: absolute !important;
-    bottom: -6px;
-    width: auto;
-    height: 114%;
-    max-width: 53%;
-    object-fit: contain;
-    object-position: right bottom;
-}
-.mode-spec {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: radial-gradient(130px circle at var(--mx) var(--my), rgb(255 255 255 / 4%), transparent 70%);
-    opacity: 0;
-    transition: opacity .3s cubic-bezier(0.31, 0.03, 0.69, 0.97);
-}
-  
-  
-  
-.mode-rim {
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    pointer-events: none;
-    background: radial-gradient(150px circle at var(--mx) var(--my), rgb(246 250 151 / 50%), rgb(215 223 31 / 13%) 45%, transparent 75%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity .3s cubic-bezier(0.31, 0.03, 0.69, 0.97);
-}
-.mode.is-lit .mode-spec,.mode.is-lit .mode-rim{opacity:0.375}
+.mode-art-bg{inset:0;width:100%;height:100%;object-fit:cover;opacity:.9;border-radius:inherit}
+.mode-wash{position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgb(14 16 4/.86) 0%,rgb(14 16 4/.6) 45%,rgb(14 16 4/.12) 100%),linear-gradient(0deg,rgb(8 10 2/.35),transparent 55%)}
+.mode-train{right:-7%;position:absolute!important;bottom:-6px;width:auto;height:114%;max-width:53%;object-fit:contain;object-position:right bottom}
+.mode-crowd{position:absolute;top:0;bottom:0;right:0;width:68%;border-radius:inherit;pointer-events:none;clip-path:inset(-60px 0 0 0 round 0 0 22px 22px)}
+.mode-bg .mode-char{bottom:-4%;width:auto;transform:translateX(-50%);filter:drop-shadow(0 4px 8px rgb(0 0 0/.5))}
+.mode-bg .mode-char.is-jake{bottom:-2%}
+.mode-spec{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(130px circle at var(--mx) var(--my),rgb(255 255 255/4%),transparent 70%);opacity:0;transition:opacity .3s cubic-bezier(.31,.03,.69,.97)}
+.mode-rim{position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(150px circle at var(--mx) var(--my),rgb(246 250 151/50%),rgb(215 223 31/13%) 45%,transparent 75%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:0;transition:opacity .3s cubic-bezier(.31,.03,.69,.97)}
+.mode.is-lit .mode-spec,.mode.is-lit .mode-rim{opacity:.375}
 .mode-jake{position:absolute;z-index:1;left:var(--jake-x,1%);bottom:var(--jake-y,0);width:auto;height:var(--jake-h,122%);pointer-events:none;user-select:none;filter:drop-shadow(0 6px 10px rgb(0 0 0/.55))}
-.mode-text{position:absolute;z-index:2;top:0;bottom:0;left:var(--text-l,8%);right:var(--text-r,30%);display:flex;flex-direction:column;justify-content:center;gap:5px;pointer-events:none}
-.mode-title{display:inline-flex;align-items:center;gap:6px;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.1;text-shadow:0 2px 8px rgb(0 0 0/.45)}
+.mode-text{position:absolute;z-index:var(--text-z,2);top:0;bottom:0;left:var(--text-l,8%);right:var(--text-r,30%);display:flex;flex-direction:column;justify-content:center;gap:5px;padding-top:var(--text-y,0px);pointer-events:none}
+.mode-title{display:inline-flex;align-items:center;gap:6px;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.1;white-space:nowrap;text-shadow:0 2px 8px rgb(0 0 0/.45)}
 .mode-sub{font-size:12px;line-height:1.2;color:rgb(255 255 255/.66);text-shadow:0 2px 8px rgb(0 0 0/.45);white-space:nowrap}
 .mode-arrow{flex:none;width:16px;height:16px;color:rgb(255 255 255/.6);transition:transform .25s cubic-bezier(.2,.8,.2,1),color .25s ease}
 .mode:hover .mode-arrow,.mode:focus-visible .mode-arrow{transform:translateX(4px);color:#e7ed8b}
-.mode-horror{      --jake-h: 138%;
-    --jake-x: -6%;
-    --jake-y: -30px;
-             --text-l:36%;--text-r:36%}
+.mode-horror{--jake-h:138%;--jake-x:-6%;--jake-y:-30px;--text-l:36%;--text-r:auto;--text-z:0;--text-y:14px}
 .mode-multi{--text-l:7%;--text-r:36%}
-.mode-multi .mode-art-bg{filter:saturate(.55) brightness(.8)}
-.mode-pl{bottom:-18%;width:auto;filter:grayscale(.6) brightness(.7) drop-shadow(0 6px 10px rgb(0 0 0/.5))}
-.mode-pl-a{right:-5%;height:122%}
-.mode-pl-b{right:24%;height:96%;opacity:.55;transform:scaleX(-1)}
-
-.info{display:flex;align-items:stretch;gap:16px;height:var(--mode-h);padding:14px 18px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012));box-shadow:inset 0 1px 0 rgb(255 255 255/.06),0 8px 24px rgb(0 0 0/.2)}
-.info-col{display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
-.info-col-main{flex:1}
-.info-divider{flex:none;width:1px;margin:2px 0;background:rgb(255 255 255/.08)}
-.info-label{font-size:12px;color:rgb(255 255 255/.5);line-height:1.2}
-.info-main{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.info-sub{font-size:12px;color:rgb(255 255 255/.5);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.info-num{font-size:26px;font-weight:650;letter-spacing:-.03em;line-height:1;color:#e7ed8b}
-
-.panel{padding:16px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012))}
-.panel-main{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
-.panel-sub{margin-top:4px;font-size:12px;color:rgb(255 255 255/.5);line-height:1.35}
-.panel-soon{border-style:dashed;border-color:rgb(225 235 95/.18);background:transparent}
 
 @media(max-width:1100px){
   .hub{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
-  .col-side{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}
-  .col-side .spacer{display:none}
-  .col-side .panel{flex:1 1 220px}
+  .col-side{display:none}
 }
 @media(max-width:760px){
   .hub{grid-template-columns:minmax(0,1fr);gap:8px;padding-top:12px}
@@ -229,11 +178,26 @@ p{margin:0}
       </div>
       <div class="ss-card-edge"></div>
     </div>
+    <p class="ss-launches" id="launch-line">Launches: 0</p>
   </section>
 
   <section class="col col-middle" aria-label="Game modes">
     <div class="spacer"></div>
     <div class="modes">
+      <button class="mode mode-multi" type="button" data-mode="multiplayer" aria-disabled="true">
+        <span class="mode-bg">
+          <img class="mode-art-bg" data-src="https://s1.dmcdn.net/v/aPhRC1foMxlLzf-Bf/x1080" alt="">
+          <span class="mode-wash"></span>
+          <span class="mode-crowd" id="crowd"></span>
+          <span class="mode-spec"></span>
+          <span class="mode-rim"></span>
+        </span>
+        <span class="mode-text">
+          <span class="mode-title">Multiplayer</span>
+          <span class="mode-sub">Coming soon</span>
+        </span>
+      </button>
+
       <button class="mode mode-horror" type="button" data-mode="horror">
         <span class="mode-bg">
           <img class="mode-art-bg" data-src="https://brunecoding.github.io/ArborUltra/HorrorBG.png" alt="">
@@ -244,48 +208,13 @@ p{margin:0}
         </span>
         <img class="mode-jake" data-src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
         <span class="mode-text">
-          <span class="mode-title">Horror<svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
-          <span class="mode-sub">Chapter 1</span>
+          <span class="mode-title">Subway Surfers<svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
         </span>
       </button>
-
-      <button class="mode mode-multi" type="button" data-mode="multiplayer" aria-disabled="true">
-        <span class="mode-bg">
-          <img class="mode-art-bg" data-src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
-          <span class="mode-wash"></span>
-          <img class="mode-pl mode-pl-b" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
-          <img class="mode-pl mode-pl-a" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
-          <span class="mode-spec"></span>
-          <span class="mode-rim"></span>
-        </span>
-        <span class="mode-text">
-          <span class="mode-title">Multiplayer</span>
-          <span class="mode-sub">Coming soon</span>
-        </span>
-      </button>
-
-      <div class="info">
-        <div class="info-col info-col-main">
-          <span class="info-label">Last played</span>
-          <span class="info-main" id="last-title">Nothing yet</span>
-          <span class="info-sub" id="last-sub">Hit play to get started</span>
-        </div>
-        <div class="info-divider"></div>
-        <div class="info-col">
-          <span class="info-label">Launches</span>
-          <span class="info-num" id="launch-count">0</span>
-        </div>
-      </div>
     </div>
   </section>
 
-  <aside class="col col-side" aria-label="Sidebar">
-    <div class="spacer"></div>
-    <div class="panel panel-soon">
-      <p class="panel-main">More games on the way</p>
-      <p class="panel-sub">Subway Surfers is the only game here for now.</p>
-    </div>
-  </aside>
+  <aside class="col col-side" aria-label="Sidebar"></aside>
 </main>
 
 <script>
@@ -296,6 +225,9 @@ p{margin:0}
   const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
   const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
   const STORE_KEY = "arborHubLastPlayed";
+  const CHAR_BASE = "https://5dd312fa-015f-11ea-ad56-9cb6d0d995f7.gdn.poki.com/ec5c789a-69d7-476d-aa4e-1a0064850d79/assets/character-previews/preview-";
+  const CROWD_POOL = ["boombot", "costa", "danunder", "dino", "frank", "princek", "tricky", "tagbot", "tasha", "rudyrascal", "spike", "lily", "king"];
+  const CROWD_SIZE = 8;
   const MAPS = [
     ["Poki", null],
     ["Hong Kong", "193-hongkong"],
@@ -319,6 +251,33 @@ p{margin:0}
   const openTab = url => window.open(url, "_blank", "noopener");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const buildCrowd = () => {
+    const host = $("#crowd");
+    if (!host) return;
+    const pool = [...CROWD_POOL];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    const picks = pool.slice(0, CROWD_SIZE);
+    const half = Math.floor(picks.length / 2);
+    const names = [...picks.slice(0, half), "jake", ...picks.slice(half)];
+    const mid = names.indexOf("jake");
+    names.forEach((name, i) => {
+      const distance = Math.abs(i - mid);
+      const img = document.createElement("img");
+      img.className = "mode-char" + (name === "jake" ? " is-jake" : "");
+      img.alt = "";
+      img.dataset.src = CHAR_BASE + name + ".webp";
+      img.style.left = (8 + i * (84 / (names.length - 1))) + "%";
+      img.style.height = (name === "jake" ? 124 : 108 - distance * 4) + "%";
+      img.style.zIndex = String(20 - distance * 2);
+      host.appendChild(img);
+    });
+  };
+
+  buildCrowd();
+
   if (!window.ARBOR_HUB) {
     document.querySelectorAll("img[data-src]").forEach(img => { img.src = img.dataset.src; });
   }
@@ -336,35 +295,22 @@ p{margin:0}
 
   let userName = readName();
 
-  const lastTitle = $("#last-title");
-  const lastSub = $("#last-sub");
-  const launchCount = $("#launch-count");
+  const launchLine = $("#launch-line");
 
-  const readStore = () => {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}; } catch { return {}; }
+  const readCount = () => {
+    try { return Number((JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}).count) || 0; } catch { return 0; }
   };
 
-  const renderLast = () => {
-    const saved = readStore();
-    if (saved.title) {
-      lastTitle.textContent = saved.title;
-      lastSub.textContent = saved.detail || "";
-    } else {
-      lastTitle.textContent = "Nothing yet";
-      lastSub.textContent = "Hit play to get started";
-    }
-    launchCount.textContent = String(saved.count || 0);
+  const renderLaunches = () => {
+    launchLine.textContent = "Launches: " + readCount();
   };
 
-  const saveLast = (title, detail) => {
-    const saved = readStore();
-    try {
-      localStorage.setItem(STORE_KEY, JSON.stringify({ title, detail, count: (saved.count || 0) + 1 }));
-    } catch {}
-    renderLast();
+  const countLaunch = () => {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ count: readCount() + 1 })); } catch {}
+    renderLaunches();
   };
 
-  renderLast();
+  renderLaunches();
 
   const trigger = $(".ss-map-trigger");
   const menu = $(".ss-map-menu");
@@ -442,7 +388,7 @@ p{margin:0}
   playBtn.addEventListener("click", () => {
     const theme = THEMES[currentMap];
     openTab(theme == null ? POKI_URL : THEME_BASE + theme);
-    saveLast("Subway Surfers", "Map: " + currentMap);
+    countLaunch();
   });
 
   document.querySelectorAll(".mode").forEach(button => {
@@ -450,7 +396,7 @@ p{margin:0}
       if (button.getAttribute("aria-disabled") === "true") return;
       if (button.dataset.mode === "horror") {
         openTab(HORROR_URL);
-        saveLast("Subway Horror", "Chapter 1");
+        countLaunch();
       }
     });
 
