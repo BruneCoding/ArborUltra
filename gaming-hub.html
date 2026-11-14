@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,36 +12,18 @@ html.embedded,html.embedded body{background:transparent}
 body{margin:0;color:#fff;font-family:"Google Sans","Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 button{font-family:inherit;color:inherit}
 p{margin:0}
+*::-webkit-scrollbar{display:none!important;width:0!important;height:0!important;background:transparent!important}
+*{scrollbar-width:none!important;-ms-overflow-style:none!important}
 
-    *::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        background: transparent !important;
-    }
-
-    * {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
-.ss-map-option.is-selected::after {
-    content: "";
-    margin-left: auto;
-    width: 6px;
-    height: 0.1px;
-    border-radius: 50%;
-    background: #e7ed8b;
-    box-shadow: 0 0 8px rgb(215 223 31 / .8);
-}
-.hub{--greet-h:56px;display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr) 230px;gap:22px;align-items:start;padding:20px 8px 56px}
+.hub{--greet-h:56px;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) 190px;gap:22px;align-items:start;padding:20px 8px 56px}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .col-left{padding-bottom:44px}
 .spacer{flex:none;height:var(--greet-h)}
 
 .greeting{flex:none;display:flex;align-items:flex-end;height:var(--greet-h);padding:0 4px}
 .greeting-line{display:inline-flex;align-items:baseline;gap:8px;font-size:25px;font-weight:650;letter-spacing:-.8px;line-height:1.2;white-space:nowrap}
-.greeting-morph{display:inline-grid;position:relative;width:max-content;filter:url(#morph-threshold)}
-.greeting-morph span{grid-area:1/1;display:block;white-space:nowrap;will-change:filter,opacity;color:#f5f5f7}
+.greeting-morph{display:inline-grid;position:relative;filter:url(#morph-threshold)}
+.greeting-morph span{grid-area:1/1;justify-self:start;display:block;white-space:nowrap;will-change:filter,opacity;color:#f5f5f7}
 .greeting-name{color:#d7df1f;font-weight:750;text-shadow:0 0 18px rgb(215 223 31/.12)}
 
 .ss-card{position:relative;width:100%;aspect-ratio:1738/700;min-height:240px;overflow:visible;isolation:isolate;container-type:inline-size;border-radius:40px;color:#fff;background:#181a09;box-shadow:0 18px 55px rgb(0 0 0/.2);--card-mx:50%;--card-my:50%}
@@ -63,7 +44,7 @@ p{margin:0}
 
 .fx{--mx:50%;--my:50%;--prox:0;position:relative;isolation:isolate;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;color:#fff;background:radial-gradient(circle at var(--mx) var(--my),rgb(215 223 31/.13),transparent 65%),linear-gradient(135deg,rgb(255 255 255/.095),rgb(255 255 255/.018));border:1px solid rgb(225 235 95/.3);border-radius:999px;box-shadow:inset 0 1px 0 rgb(255 255 255/.19),inset 0 -1px 0 rgb(255 255 255/.025),0 5px 18px rgb(0 0 0/.22);backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%);cursor:pointer;-webkit-tap-highlight-color:transparent;text-decoration:none;transition:border-color .3s ease,box-shadow .3s ease,transform .25s cubic-bezier(.2,.8,.2,1),background .3s ease}
 .fx::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle 75px at var(--mx) var(--my),rgb(246 250 151/.95),rgb(215 223 31/.35) 22%,transparent 70%);opacity:calc(var(--prox)*.22);transition:opacity .3s ease}
-.fx:focus-visible,.ss-map-option:focus-visible{outline:2px solid rgb(231 239 112/.9);outline-offset:2px}
+.fx:focus-visible,.ss-map-option:focus-visible,.mode:focus-visible{outline:2px solid rgb(231 239 112/.9);outline-offset:2px}
 
 .ss-play{min-width:100px;padding:1.15cqw 3.2cqw 1.15cqw 2cqw;gap:1cqw;font-size:clamp(12px,2.1cqw,17px);font-weight:650;letter-spacing:-.025em;line-height:1;white-space:nowrap}
 .ss-play-icon{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;width:max(12px,2.6cqw);height:max(12px,2.6cqw);color:#e6ed83;filter:drop-shadow(0 0 7px rgb(215 223 31/.28));transition:transform .3s cubic-bezier(.2,.8,.2,1),filter .3s ease}
@@ -83,11 +64,9 @@ p{margin:0}
 .ss-map-chevron{position:relative;z-index:2;width:max(10px,1.8cqw);height:max(10px,1.8cqw);color:rgb(255 255 255/.65);transition:transform .25s ease,color .25s ease}
 .ss-map-trigger[aria-expanded="true"] .ss-map-chevron{transform:rotate(180deg);color:#e7ed8b}
 
-.ss-map-menu{position:absolute;top:calc(100% + 12px);left:0;z-index:100;display:flex;flex-direction:column;gap:2px;width:clamp(190px,21cqw,250px);max-height:min(70vh,440px);margin:0;padding:8px;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:20px;background:transparent;box-shadow:none;backdrop-filter:blur(24px) saturate(150%) brightness(.5);-webkit-backdrop-filter:blur(24px) saturate(150%) brightness(.5);transform-origin:top left;animation:menu-in .22s cubic-bezier(.2,.8,.2,1);scrollbar-width:thin;scrollbar-color:rgb(255 255 255/.25) transparent}
+.ss-map-menu{position:absolute;top:calc(100% + 12px);left:0;z-index:100;display:flex;flex-direction:column;gap:2px;width:clamp(190px,21cqw,250px);max-height:min(70vh,440px);margin:0;padding:8px;overflow-y:auto;overscroll-behavior:contain;border:0;border-radius:20px;background:transparent;box-shadow:none;backdrop-filter:blur(24px) saturate(150%) brightness(.5);-webkit-backdrop-filter:blur(24px) saturate(150%) brightness(.5);transform-origin:top left;animation:menu-in .22s cubic-bezier(.2,.8,.2,1)}
 .ss-map-menu.up{top:auto;bottom:calc(100% + 12px);transform-origin:bottom left}
 .ss-map-menu[hidden]{display:none}
-.ss-map-menu::-webkit-scrollbar{width:6px}
-.ss-map-menu::-webkit-scrollbar-thumb{background:rgb(255 255 255/.25);border-radius:99px}
 @keyframes menu-in{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .ss-map-option{display:flex;align-items:center;gap:11px;width:100%;margin:0;padding:10px 12px;border:0;border-radius:13px;background:transparent;color:rgb(255 255 255/.8);text-align:left;font-size:14px;font-weight:500;line-height:1;white-space:nowrap;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .18s ease,color .18s ease}
 .ss-pin{flex:none;width:16px;height:16px;color:rgb(255 255 255/.45);transition:color .2s ease,filter .2s ease}
@@ -95,29 +74,46 @@ p{margin:0}
 .ss-map-option:hover .ss-pin{color:rgb(255 255 255/.9)}
 .ss-map-option.is-selected{color:#fff;background:rgb(255 255 255/.06)}
 .ss-map-option.is-selected .ss-pin{color:#e7ed8b;filter:drop-shadow(0 0 6px rgb(215 223 31/.7))}
-.ss-map-option.is-selected::after{content:"";margin-left:auto;width:6px;height:6px;border-radius:50%;background:#e7ed8b;box-shadow:0 0 8px rgb(215 223 31/.8)}
+.ss-map-option.is-selected::after{content:"";margin-left:auto;width:6px;height:.1px;border-radius:50%;background:#e7ed8b;box-shadow:0 0 8px rgb(215 223 31/.8)}
 
-.modes{display:flex;flex-direction:column;gap:12px}
-.mode{justify-content:flex-start;gap:14px;width:100%;padding:14px 16px;border-radius:22px;border-color:rgb(225 235 95/.16);text-align:left}
-.mode>*{position:relative;z-index:1}
-.mode:not([aria-disabled="true"]):hover{border-color:rgb(235 242 122/.5);box-shadow:inset 0 1px 0 rgb(255 255 255/.18),0 10px 28px rgb(0 0 0/.3),0 0 22px rgb(215 223 31/.1);transform:translateY(-2px)}
-.mode:not([aria-disabled="true"]):active{transform:translateY(0) scale(.985);transition-duration:.08s}
-.mode[aria-disabled="true"]{cursor:default;opacity:.72}
-.mode-icon{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:14px;color:#e6ed83;background:rgb(215 223 31/.1);border:1px solid rgb(225 235 95/.18);filter:drop-shadow(0 0 7px rgb(215 223 31/.18))}
-.mode-icon svg{width:22px;height:22px}
-.mode-text{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
-.mode-title{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.1}
-.mode-sub{font-size:12px;line-height:1.2;color:rgb(255 255 255/.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mode-chevron{flex:none;width:18px;height:18px;color:rgb(255 255 255/.55);transition:transform .25s ease,color .25s ease}
-.mode:hover .mode-chevron{transform:translateX(3px);color:#e7ed8b}
-.mode-badge{flex:none;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:600;color:rgb(255 255 255/.6);background:rgb(255 255 255/.07)}
+.modes{--mode-h:92px;display:flex;flex-direction:column;gap:12px}
+.mode{--mx:50%;--my:50%;position:relative;display:block;width:100%;height:var(--mode-h);margin:0;padding:0;border:0;border-radius:22px;background:none;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mode[aria-disabled="true"]{cursor:default}
+.mode-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit;background:#181a09;box-shadow:0 10px 30px rgb(0 0 0/.22)}
+.mode-bg::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08),inset 0 1px 0 rgb(255 255 255/.08)}
+.mode-bg img{position:absolute;display:block;pointer-events:none;user-select:none}
+.mode-art-bg{inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.mode-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgb(14 16 4/.86) 0%,rgb(14 16 4/.6) 45%,rgb(14 16 4/.12) 100%),linear-gradient(0deg,rgb(8 10 2/.35),transparent 55%)}
+.mode-train{right:-1%;bottom:0;width:auto;height:94%;max-width:46%;object-fit:contain;object-position:right bottom}
+.mode-spec{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(130px circle at var(--mx) var(--my),rgb(255 255 255/.1),transparent 70%);opacity:0;transition:opacity .3s ease}
+.mode-rim{position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(150px circle at var(--mx) var(--my),rgb(246 250 151/.8),rgb(215 223 31/.22) 45%,transparent 75%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:0;transition:opacity .3s ease}
+.mode.is-lit .mode-spec,.mode.is-lit .mode-rim{opacity:1}
+.mode-jake{position:absolute;z-index:1;left:var(--jake-x,1%);bottom:var(--jake-y,0);width:auto;height:var(--jake-h,122%);pointer-events:none;user-select:none;filter:drop-shadow(0 6px 10px rgb(0 0 0/.55))}
+.mode-text{position:absolute;z-index:2;top:0;bottom:0;left:var(--text-l,8%);right:var(--text-r,30%);display:flex;flex-direction:column;justify-content:center;gap:5px;pointer-events:none}
+.mode-title{display:inline-flex;align-items:center;gap:6px;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.1;text-shadow:0 2px 8px rgb(0 0 0/.45)}
+.mode-sub{font-size:12px;line-height:1.2;color:rgb(255 255 255/.66);text-shadow:0 2px 8px rgb(0 0 0/.45);white-space:nowrap}
+.mode-arrow{flex:none;width:16px;height:16px;color:rgb(255 255 255/.6);transition:transform .25s cubic-bezier(.2,.8,.2,1),color .25s ease}
+.mode:hover .mode-arrow,.mode:focus-visible .mode-arrow{transform:translateX(4px);color:#e7ed8b}
+.mode-horror{--jake-h:122%;--jake-x:1%;--jake-y:0;--text-l:36%;--text-r:36%}
+.mode-multi{--text-l:7%;--text-r:36%}
+.mode-multi .mode-art-bg{filter:saturate(.55) brightness(.8)}
+.mode-pl{bottom:-18%;width:auto;filter:grayscale(.6) brightness(.7) drop-shadow(0 6px 10px rgb(0 0 0/.5))}
+.mode-pl-a{right:-5%;height:122%}
+.mode-pl-b{right:24%;height:96%;opacity:.55;transform:scaleX(-1)}
 
-.panel{padding:16px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012));box-shadow:inset 0 1px 0 rgb(255 255 255/.06),0 8px 24px rgb(0 0 0/.2)}
-.panel-title{margin:0 0 10px;font-size:13px;font-weight:600;color:rgb(255 255 255/.55)}
-.panel-main{font-size:16px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.info{display:flex;align-items:stretch;gap:16px;height:var(--mode-h);padding:14px 18px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012));box-shadow:inset 0 1px 0 rgb(255 255 255/.06),0 8px 24px rgb(0 0 0/.2)}
+.info-col{display:flex;flex-direction:column;justify-content:center;gap:4px;min-width:0}
+.info-col-main{flex:1}
+.info-divider{flex:none;width:1px;margin:2px 0;background:rgb(255 255 255/.08)}
+.info-label{font-size:12px;color:rgb(255 255 255/.5);line-height:1.2}
+.info-main{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info-sub{font-size:12px;color:rgb(255 255 255/.5);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.info-num{font-size:26px;font-weight:650;letter-spacing:-.03em;line-height:1;color:#e7ed8b}
+
+.panel{padding:16px;border-radius:22px;border:1px solid rgb(255 255 255/.07);background:linear-gradient(135deg,rgb(255 255 255/.045),rgb(255 255 255/.012))}
+.panel-main{font-size:15px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
 .panel-sub{margin-top:4px;font-size:12px;color:rgb(255 255 255/.5);line-height:1.35}
-.panel-soon{border-style:dashed;border-color:rgb(225 235 95/.18);background:transparent;box-shadow:none}
-.panel-wide{padding:22px 18px}
+.panel-soon{border-style:dashed;border-color:rgb(225 235 95/.18);background:transparent}
 
 @media(max-width:1100px){
   .hub{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
@@ -150,7 +146,7 @@ p{margin:0}
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="morph-threshold" x="-30%" y="-100%" width="160%" height="300%">
+    <filter id="morph-threshold" x="-80%" y="-100%" width="260%" height="300%">
       <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 255 -140"></feColorMatrix>
     </filter>
   </defs>
@@ -160,8 +156,8 @@ p{margin:0}
   <section class="col col-left" aria-label="Featured game">
     <div class="greeting">
       <div class="greeting-line">
-        <div class="greeting-morph"><span id="g1"></span><span id="g2"></span></div>
-        <span class="greeting-name" id="gname">there.</span>
+        <div class="greeting-morph" id="gbox"><span id="g1"></span><span id="g2"></span></div>
+        <span class="greeting-name"><span id="gname">there</span><span id="gend">.</span></span>
       </div>
     </div>
 
@@ -202,62 +198,64 @@ p{margin:0}
   <section class="col col-middle" aria-label="Game modes">
     <div class="spacer"></div>
     <div class="modes">
-      <button class="mode fx" type="button" data-mode="horror">
-        <span class="mode-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10h.01"></path><path d="M15 10h.01"></path><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"></path></svg>
+      <button class="mode mode-horror" type="button" data-mode="horror">
+        <span class="mode-bg">
+          <img class="mode-art-bg" data-src="https://brunecoding.github.io/ArborUltra/HorrorBG.png" alt="">
+          <span class="mode-wash"></span>
+          <img class="mode-train" data-src="https://brunecoding.github.io/ArborUltra/TrainHorror.png" alt="">
+          <span class="mode-spec"></span>
+          <span class="mode-rim"></span>
         </span>
+        <img class="mode-jake" data-src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
         <span class="mode-text">
-          <span class="mode-title">Horror</span>
-          <span class="mode-sub">Subway Horror, chapter 1</span>
+          <span class="mode-title">Horror<svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
+          <span class="mode-sub">Chapter 1</span>
         </span>
-        <svg class="mode-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
       </button>
 
-      <button class="mode fx" type="button" data-mode="multiplayer" aria-disabled="true">
-        <span class="mode-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      <button class="mode mode-multi" type="button" data-mode="multiplayer" aria-disabled="true">
+        <span class="mode-bg">
+          <img class="mode-art-bg" data-src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
+          <span class="mode-wash"></span>
+          <img class="mode-pl mode-pl-b" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
+          <img class="mode-pl mode-pl-a" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
+          <span class="mode-spec"></span>
+          <span class="mode-rim"></span>
         </span>
         <span class="mode-text">
           <span class="mode-title">Multiplayer</span>
-          <span class="mode-sub">Run with friends</span>
+          <span class="mode-sub">Coming soon</span>
         </span>
-        <span class="mode-badge">Soon</span>
       </button>
 
-      <button class="mode fx" type="button" data-mode="placeholder" aria-disabled="true">
-        <span class="mode-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
-        </span>
-        <span class="mode-text">
-          <span class="mode-title">New mode</span>
-          <span class="mode-sub">Not announced yet</span>
-        </span>
-        <span class="mode-badge">Soon</span>
-      </button>
-    </div>
-
-    <div class="panel panel-soon panel-wide">
-      <p class="panel-main">More games on the way</p>
-      <p class="panel-sub">Subway Surfers is the only game here for now.</p>
+      <div class="info">
+        <div class="info-col info-col-main">
+          <span class="info-label">Last played</span>
+          <span class="info-main" id="last-title">Nothing yet</span>
+          <span class="info-sub" id="last-sub">Hit play to get started</span>
+        </div>
+        <div class="info-divider"></div>
+        <div class="info-col">
+          <span class="info-label">Launches</span>
+          <span class="info-num" id="launch-count">0</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <aside class="col col-side" aria-label="Sidebar">
     <div class="spacer"></div>
-    <div class="panel">
-      <h2 class="panel-title">Last played</h2>
-      <p class="panel-main" id="last-played">Nothing yet</p>
-      <p class="panel-sub" id="last-played-sub">Hit play to get started</p>
-    </div>
     <div class="panel panel-soon">
-      <h2 class="panel-title">Stats</h2>
-      <p class="panel-sub">Playtime and achievements will show up here.</p>
+      <p class="panel-main">More games on the way</p>
+      <p class="panel-sub">Subway Surfers is the only game here for now.</p>
     </div>
   </aside>
 </main>
 
 <script>
 (() => {
+  if (window.self !== window.top) document.documentElement.classList.add("embedded");
+
   const POKI_URL = "https://poki.com/en/g/subway-surfers";
   const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
   const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
@@ -302,23 +300,31 @@ p{margin:0}
 
   let userName = readName();
 
-  const lastTitle = $("#last-played");
-  const lastSub = $("#last-played-sub");
+  const lastTitle = $("#last-title");
+  const lastSub = $("#last-sub");
+  const launchCount = $("#launch-count");
+
+  const readStore = () => {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}; } catch { return {}; }
+  };
 
   const renderLast = () => {
-    let saved = null;
-    try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch {}
-    if (saved && saved.title) {
+    const saved = readStore();
+    if (saved.title) {
       lastTitle.textContent = saved.title;
       lastSub.textContent = saved.detail || "";
     } else {
       lastTitle.textContent = "Nothing yet";
       lastSub.textContent = "Hit play to get started";
     }
+    launchCount.textContent = String(saved.count || 0);
   };
 
   const saveLast = (title, detail) => {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ title, detail })); } catch {}
+    const saved = readStore();
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ title, detail, count: (saved.count || 0) + 1 }));
+    } catch {}
     renderLast();
   };
 
@@ -411,6 +417,18 @@ p{margin:0}
         saveLast("Subway Horror", "Chapter 1");
       }
     });
+
+    button.addEventListener("pointerenter", () => button.classList.add("is-lit"));
+    button.addEventListener("pointermove", event => {
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty("--mx", (event.clientX - rect.left) + "px");
+      button.style.setProperty("--my", (event.clientY - rect.top) + "px");
+    });
+    button.addEventListener("pointerleave", () => {
+      button.classList.remove("is-lit");
+      button.style.setProperty("--mx", "50%");
+      button.style.setProperty("--my", "50%");
+    });
   });
 
   document.querySelectorAll(".fx").forEach(element => {
@@ -438,76 +456,136 @@ p{margin:0}
     card.style.setProperty("--card-my", "50%");
   });
 
+  const gBox = $("#gbox");
   const g1 = $("#g1");
   const g2 = $("#g2");
   const gName = $("#gname");
+  const gEnd = $("#gend");
   const MORPH = 1;
-  const COOLDOWN = 1.5;
 
-  const buildGreetings = () => {
+  const RAW_GREETINGS = [
+    "Welcome back",
+    "Hello again",
+    "Ready to go?",
+    "Greetings",
+    "Wsp",
+    "What's good?",
+    "Welcome to the gng",
+    "Yo, welcome back",
+    "Ayy, you're back",
+    "Hey there",
+    "Yo!",
+    "Sup?",
+    "Wassup gang",
+    "Welcome back, legend",
+    "Ayo, welcome back",
+    "What's the move?",
+    "We meet again",
+    "Good to see you",
+    "The gang's all here",
+    "Yo",
+    "How we doing?",
+    "What's poppin'?",
+    "Ayyy",
+    "Well, well, well",
+    "You're back!",
+    "Welcome aboard",
+    "Ready when you are",
+    "Oh, it's you again",
+    "Hey",
+    "Wsg",
+    "We back",
+    "Locked in?",
+    "Another day, another W",
+    "Cookin?",
+    "Yo yo yo",
+    "Chillin'?",
+    "Big welcome back",
+    "Back in business",
+    "How's life?",
+    "Ayo gang",
+    "What's happening,",
+    "Sup gang?",
+    "W mans",
+    "Alright, let's roll",
+    "What's cooking?"
+  ];
+
+  const parseGreeting = raw => ({
+    text: raw.replace(/[.!?,]+$/, "") + ",",
+    end: /[.!?]$/.test(raw) ? raw.slice(-1) : "."
+  });
+
+  const timeGreeting = () => {
     const hour = new Date().getHours();
-    const first = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-    return [
-      first,
-      "Welcome back",
-      "Hello again",
-      "Ready to go?",
-      "Greetings",
-      "Wsp",
-      "What's good?",
-      "Welcome to the gng",
-      "Yo, welcome back",
-      "Ayy, you're back",
-      "Hey there",
-      "Yo!",
-      "Sup?",
-      "Wassup gang",
-      "Welcome back, legend",
-      "Ayo, welcome back",
-      "What's the move?",
-      "We meet again",
-      "Good to see you",
-      "The gang's all here",
-      "Yo",
-      "How we doing?",
-      "What's poppin'?",
-      "Ayyy",
-      "Well, well, well",
-      "You're back!",
-      "Welcome aboard",
-      "Ready when you are",
-      "Oh, it's you again",
-      "Hey",
-      "Wsg",
-      "We back",
-      "Locked in?",
-      "Another day, another W",
-      "Cookin?",
-      "Yo yo yo",
-      "Chillin'?",
-      "Big welcome back",
-      "Back in business",
-      "How's life?",
-      "Ayo gang",
-      "What's happening,",
-      "Sup gang?",
-      "W mans",
-      "Alright, let's roll"
-    ];
+    return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
   };
 
-  const greetings = buildGreetings();
-  let index = greetings.length - 1;
-  let cooldown = COOLDOWN;
+  const greetings = [timeGreeting(), ...RAW_GREETINGS].map(parseGreeting);
+
+  let index = 0;
+  let current = greetings[0];
+  let incoming = null;
+  let morphing = false;
   let morph = 0;
-  let waiting = true;
-  let advance = false;
+  let elapsed = 0;
+  let factor = 1;
+  let widthFrom = 0;
+  let widthTo = 0;
+  let endSwapped = false;
   let lastTime = performance.now();
 
-  const paint = () => {
-    g1.textContent = greetings[index];
-    g2.textContent = greetings[(index + 1) % greetings.length];
-    gName.textContent = userName + ".";
+  let activity = 0.5;
+  let moved = 0;
+  let interactions = 0;
+  let lastX = null;
+  let lastY = null;
+
+  document.addEventListener("pointermove", event => {
+    if (lastX !== null) moved += Math.hypot(event.clientX - lastX, event.clientY - lastY);
+    lastX = event.clientX;
+    lastY = event.clientY;
+  });
+  document.documentElement.addEventListener("pointerleave", () => { lastX = null; lastY = null; });
+  ["pointerdown", "keydown", "wheel", "touchmove"].forEach(type => {
+    document.addEventListener(type, () => { interactions++; }, { passive: true });
+  });
+
+  setInterval(() => {
+    const target = Math.min(1, moved / 400 + interactions * 0.15);
+    activity += (target - activity) * 0.3;
+    moved = 0;
+    interactions = 0;
+  }, 1000);
+
+  const delayFor = a => (20 - 12 * a) * factor;
+  const pickFactor = () => Math.random() < 0.1 ? 0.75 : 0.9 + Math.random() * 0.25;
+  const smooth = f => f * f * (3 - 2 * f);
+
+  const showCurrent = () => {
+    g1.textContent = current.text;
+    g1.style.filter = "";
+    g1.style.opacity = "100%";
+    g2.textContent = "";
+    g2.style.filter = "";
+    g2.style.opacity = "0%";
+    gEnd.textContent = current.end;
+    gEnd.style.opacity = "1";
+    gEnd.style.filter = "";
+    gBox.style.width = g1.offsetWidth + "px";
+  };
+
+  const startMorph = () => {
+    let next = index;
+    while (next === index) next = Math.floor(Math.random() * greetings.length);
+    index = next;
+    incoming = greetings[index];
+    g2.textContent = incoming.text;
+    widthFrom = g1.offsetWidth;
+    widthTo = g2.offsetWidth;
+    endSwapped = false;
+    morph = 0;
+    morphing = true;
   };
 
   const setMorph = fraction => {
@@ -517,51 +595,50 @@ p{margin:0}
     g2.style.opacity = Math.pow(f, 0.4) * 100 + "%";
     g1.style.filter = "blur(" + Math.min(8 / inverse - 8, 100) + "px)";
     g1.style.opacity = Math.pow(inverse, 0.4) * 100 + "%";
+    gBox.style.width = (widthFrom + (widthTo - widthFrom) * smooth(f)) + "px";
+    if (f >= 0.5 && !endSwapped) {
+      gEnd.textContent = incoming.end;
+      endSwapped = true;
+    }
+    gEnd.style.opacity = String(Math.abs(1 - 2 * f));
   };
 
-  const resetMorph = () => {
-    g2.style.filter = "";
-    g2.style.opacity = "100%";
-    g1.style.filter = "";
-    g1.style.opacity = "0%";
+  const finishMorph = () => {
+    current = incoming;
+    incoming = null;
+    morphing = false;
+    elapsed = 0;
+    factor = pickFactor();
+    showCurrent();
   };
 
   const tick = now => {
     const dt = Math.min((now - lastTime) / 1000, 0.05);
     lastTime = now;
 
-    if (waiting) {
-      resetMorph();
-      cooldown -= dt;
-      if (cooldown <= 0) {
-        if (advance) {
-          index = (index + 1) % greetings.length;
-          paint();
-          advance = false;
-        }
-        waiting = false;
-        morph = 0;
-      }
-    } else {
+    if (morphing) {
       morph += dt;
       setMorph(morph / MORPH);
-      if (morph >= MORPH) {
-        waiting = true;
-        cooldown = COOLDOWN;
-        advance = true;
-      }
+      if (morph >= MORPH) finishMorph();
+    } else {
+      elapsed += dt;
+      if (elapsed >= delayFor(activity)) startMorph();
     }
 
     requestAnimationFrame(tick);
   };
 
-  paint();
-  resetMorph();
+  gName.textContent = userName;
+  factor = pickFactor();
+  showCurrent();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => { if (!morphing) gBox.style.width = g1.offsetWidth + "px"; });
+  }
   if (!reducedMotion) requestAnimationFrame(tick);
 
   const setUser = name => {
     userName = String(name || "").trim().split(/\s+/)[0] || "there";
-    gName.textContent = userName + ".";
+    gName.textContent = userName;
   };
 
   window.addEventListener("hashchange", () => {
