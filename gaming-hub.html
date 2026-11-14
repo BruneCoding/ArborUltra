@@ -79,22 +79,58 @@ p{margin:0}
 .modes{--mode-h:92px;display:flex;flex-direction:column;gap:12px}
 .mode{--mx:50%;--my:50%;position:relative;display:block;width:100%;height:var(--mode-h);margin:0;padding:0;border:0;border-radius:22px;background:none;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .mode[aria-disabled="true"]{cursor:default}
-.mode-bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit;background:#181a09;box-shadow:0 10px 30px rgb(0 0 0/.22)}
+.mode-bg{position:absolute;inset:0;z-index:0;border-radius:inherit;background:#181a09;box-shadow:0 10px 30px rgb(0 0 0/.22)}
 .mode-bg::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 0 0 1px rgb(255 255 255/.08),inset 0 1px 0 rgb(255 255 255/.08)}
 .mode-bg img{position:absolute;display:block;pointer-events:none;user-select:none}
 .mode-art-bg{inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
 .mode-wash{position:absolute;inset:0;background:linear-gradient(90deg,rgb(14 16 4/.86) 0%,rgb(14 16 4/.6) 45%,rgb(14 16 4/.12) 100%),linear-gradient(0deg,rgb(8 10 2/.35),transparent 55%)}
-.mode-train{right:-1%;bottom:0;width:auto;height:94%;max-width:46%;object-fit:contain;object-position:right bottom}
-.mode-spec{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(130px circle at var(--mx) var(--my),rgb(255 255 255/.1),transparent 70%);opacity:0;transition:opacity .3s ease}
-.mode-rim{position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(150px circle at var(--mx) var(--my),rgb(246 250 151/.8),rgb(215 223 31/.22) 45%,transparent 75%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:0;transition:opacity .3s ease}
-.mode.is-lit .mode-spec,.mode.is-lit .mode-rim{opacity:1}
+.mode-train {
+    right: -7%;
+    position: absolute !important;
+    bottom: -6px;
+    width: auto;
+    height: 114%;
+    max-width: 53%;
+    object-fit: contain;
+    object-position: right bottom;
+}
+.mode-spec {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(130px circle at var(--mx) var(--my), rgb(255 255 255 / 4%), transparent 70%);
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(0.31, 0.03, 0.69, 0.97);
+}
+  
+  
+  
+.mode-rim {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: radial-gradient(150px circle at var(--mx) var(--my), rgb(246 250 151 / 50%), rgb(215 223 31 / 13%) 45%, transparent 75%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(0.31, 0.03, 0.69, 0.97);
+}
+.mode.is-lit .mode-spec,.mode.is-lit .mode-rim{opacity:0.375}
 .mode-jake{position:absolute;z-index:1;left:var(--jake-x,1%);bottom:var(--jake-y,0);width:auto;height:var(--jake-h,122%);pointer-events:none;user-select:none;filter:drop-shadow(0 6px 10px rgb(0 0 0/.55))}
 .mode-text{position:absolute;z-index:2;top:0;bottom:0;left:var(--text-l,8%);right:var(--text-r,30%);display:flex;flex-direction:column;justify-content:center;gap:5px;pointer-events:none}
 .mode-title{display:inline-flex;align-items:center;gap:6px;font-size:17px;font-weight:650;letter-spacing:-.02em;line-height:1.1;text-shadow:0 2px 8px rgb(0 0 0/.45)}
 .mode-sub{font-size:12px;line-height:1.2;color:rgb(255 255 255/.66);text-shadow:0 2px 8px rgb(0 0 0/.45);white-space:nowrap}
 .mode-arrow{flex:none;width:16px;height:16px;color:rgb(255 255 255/.6);transition:transform .25s cubic-bezier(.2,.8,.2,1),color .25s ease}
 .mode:hover .mode-arrow,.mode:focus-visible .mode-arrow{transform:translateX(4px);color:#e7ed8b}
-.mode-horror{--jake-h:122%;--jake-x:1%;--jake-y:0;--text-l:36%;--text-r:36%}
+.mode-horror{    --jake-h: 100%;
+    --jake-x: -4%;
+    --jake-y: -16px;
+             --text-l:36%;--text-r:36%}
 .mode-multi{--text-l:7%;--text-r:36%}
 .mode-multi .mode-art-bg{filter:saturate(.55) brightness(.8)}
 .mode-pl{bottom:-18%;width:auto;filter:grayscale(.6) brightness(.7) drop-shadow(0 6px 10px rgb(0 0 0/.5))}
