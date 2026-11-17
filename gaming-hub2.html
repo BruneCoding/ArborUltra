@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="dark">
+        <title>Arbor Gaming Hub</title>
+        <style>
+            :root {
+                --accent: #d7df1f;
+                --bg: #0a0a0a;
+                --glass: rgba(20,22,17,.88)
+            }
+
+            *,*::before,*::after {
+                box-sizing: border-box
+            }
+
+            html,body {
+                margin: 0;
+                min-height: 100%;
+                background: var(--bg);
+                color: #fff;
+                font-family: "Google Sans","Segoe UI",Roboto,Arial,sans-serif;
+                -webkit-font-smoothing: antialiased
+            }
+
+            body {
+                overflow-x: hidden
+            }
+
+            button {
+                font: inherit;
+                color: inherit
+            }
+
+            *::-webkit-scrollbar {
+                display: none
+            }
+
+            * {
+                scrollbar-width: none
+            }
+
+            .hub {
+                display: grid;
+                grid-template-columns: minmax(0,1.6fr) minmax(0,1fr) 190px;
+                gap: 22px;
+                align-items: start;
+                padding: 20px 8px 56px
+            }
+
+            .col {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                min-width: 0
+            }
+
+            .greeting {
+                height: 56px;
+                display: flex;
+                align-items: flex-end;
+                padding: 0 4px
+            }
+
+            .greeting-line {
+                font-size: 25px;
+                font-weight: 650;
+                letter-spacing: -.8px;
+                white-space: nowrap
+            }
+
+            .greeting-name {
+                color: var(--accent);
+                font-weight: 750;
+                text-shadow: 0 0 18px #d7df1f20
+            }
+
+            .ss-card {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 1738/700;
+                min-height: 240px;
+                overflow: visible;
+                isolation: isolate;
+                container-type: inline-size;
+                border-radius: 40px;
+                background: #181a09;
+                box-shadow: 0 18px 55px #0003
+            }
+
+            .ss-background {
+                position: absolute;
+                inset: 0;
+                z-index: -4;
+                width: 100%;
+                height: 100%;
+                border-radius: inherit;
+                object-fit: cover;
+                opacity: .87
+            }
+
+            .ss-background-wash {
+                position: absolute;
+                inset: 0;
+                z-index: -3;
+                border-radius: inherit;
+                background: linear-gradient(90deg,#141604f0 0%,#141604d1 25%,#14160491 45%,#14160424 68%,transparent),linear-gradient(0deg,#0c0e0366,transparent 40%)
+            }
+
+            .ss-background-vignette {
+                position: absolute;
+                inset: 0;
+                z-index: -2;
+                border-radius: inherit;
+                box-shadow: inset 0 0 80px #0003,inset 0 1px 0 #ffffff12
+            }
+
+            .ss-ambient {
+                position: absolute;
+                z-index: -1;
+                width: 36%;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                filter: blur(65px);
+                opacity: .13;
+                background: var(--accent);
+                animation: drift 12s ease-in-out infinite alternate;
+                pointer-events: none
+            }
+
+            .ss-ambient-one {
+                top: -35%;
+                left: 8%
+            }
+
+            .ss-ambient-two {
+                right: 18%;
+                bottom: -50%;
+                opacity: .09;
+                animation-delay: -5s
+            }
+
+            @keyframes drift {
+                to {
+                    transform: translate(8%,7%) scale(1.13)
+                }
+            }
+
+            .ss-character {
+                position: absolute;
+                z-index: 0;
+                right: 0;
+                bottom: 0;
+                height: 110%;
+                max-width: 60%;
+                object-fit: contain;
+                object-position: right bottom;
+                transform: translate(-4.5%,6%) scale(1.03);
+                filter: drop-shadow(0 10px 30px #0007) brightness(.8) saturate(.9);
+                pointer-events: none
+            }
+
+            .ss-content {
+                position: absolute;
+                inset: 0;
+                z-index: 2;
+                display: flex;
+                padding: 5% 0 5% 5%;
+                pointer-events: none
+            }
+
+            .ss-copy {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                width: 50%;
+                height: 100%;
+                min-width: 0;
+                align-items: flex-start
+            }
+
+            .ss-logo {
+                width: 76%;
+                max-height: 38%;
+                object-fit: contain;
+                object-position: left center;
+                filter: drop-shadow(0 5px 12px #0003)
+            }
+
+            .ss-description {
+                width: 84%;
+                font-size: clamp(11px,2.1cqw,15px);
+                line-height: 1.45;
+                color: #ffffffdf;
+                text-shadow: 0 2px 8px #0006
+            }
+
+            .ss-actions {
+                position: relative;
+                z-index: 20;
+                display: flex;
+                align-items: center;
+                gap: 1.6cqw;
+                pointer-events: auto
+            }
+
+            .fx {
+                --mx: 50%;
+                --my: 50%;
+                position: relative;
+                isolation: isolate;
+                overflow: hidden;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border: 1px solid #e1eb5f4d;
+                border-radius: 999px;
+                background: radial-gradient(circle at var(--mx) var(--my),#d7df1f22,transparent 65%),linear-gradient(135deg,#ffffff18,#ffffff05);
+                box-shadow: inset 0 1px 0 #ffffff30,0 5px 18px #0004;
+                backdrop-filter: blur(18px) saturate(145%);
+                cursor: pointer;
+                text-decoration: none;
+                transition: .25s ease
+            }
+
+            .fx:hover {
+                border-color: #ebf27ab8;
+                box-shadow: inset 0 1px 0 #ffffff3d,0 8px 28px #0005,0 0 22px #d7df1f20;
+                transform: translateY(-2px)
+            }
+
+            .fx:active {
+                transform: scale(.975)
+            }
+
+            .ss-play {
+                gap: 10px;
+                padding: 12px 24px 12px 16px;
+                font-size: clamp(12px,2.1cqw,17px);
+                font-weight: 650;
+                white-space: nowrap
+            }
+
+            .ss-play svg {
+                width: 19px;
+                height: 19px;
+                color: #e6ed83
+            }
+
+            .ss-map-trigger {
+                gap: 9px;
+                padding: 12px 15px;
+                font-size: clamp(11px,1.9cqw,15px);
+                opacity: .9;
+                white-space: nowrap
+            }
+
+            .ss-map-trigger svg {
+                width: 17px;
+                height: 17px;
+                color: #e0e77c
+            }
+
+            .ss-map-chevron {
+                transition: transform .25s ease
+            }
+
+            .ss-map-trigger[aria-expanded=true] .ss-map-chevron {
+                transform: rotate(180deg)
+            }
+
+            /* 3D location picker */
+            .globe-popover {
+                position: absolute;
+                top: calc(100% + 14px);
+                left: 0;
+                z-index: 500;
+                width: min( min(680px, calc(100vw - 32px)), 82vw);
+                padding: 16px;
+                border: 1px solid #ffffff20;
+                border-radius: 25px;
+                background: linear-gradient(145deg,rgba(30,33,25,.96),rgba(12,14,12,.97));
+                box-shadow: 0 24px 80px #000b,inset 0 1px 0 #ffffff15;
+                backdrop-filter: blur(28px) saturate(145%);
+                transform-origin: top left;
+                animation: pop .22s cubic-bezier(.2,.8,.2,1)
+            }
+
+            .globe-popover[hidden] {
+                display: none
+            }
+
+            @keyframes pop {
+                from {
+                    opacity: 0;
+                    transform: translateY(-8px) scale(.975)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: none
+                }
+            }
+
+            .globe-heading {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 2px 3px 12px
+            }
+
+            .globe-heading strong {
+                font-size: 14px;
+                letter-spacing: -.2px
+            }
+
+            .globe-heading span {
+                font-size: 10px;
+                color: #ffffff70
+            }
+
+            .globe-stage {
+                position: relative;
+                height: 310px;
+                overflow: hidden;
+                border-radius: 19px;
+                background: radial-gradient(ellipse at 50% 46%,#263328 0%,#111a17 48%,#0a0d0d 100%);
+                border: 1px solid #ffffff0d;
+                cursor: grab;
+                touch-action: pan-y
+            }
+
+            .globe-stage:active {
+                cursor: grabbing
+            }
+
+            #earth-canvas {
+                display: block;
+                width: 100%;
+                height: 100%
+            }
+
+            .globe-hint {
+                position: absolute;
+                left: 13px;
+                bottom: 11px;
+                font-size: 10px;
+                color: #ffffff65;
+                pointer-events: none;
+                text-shadow: 0 1px 5px #000
+            }
+
+            .globe-tooltip {
+                position: absolute;
+                top: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 7px 11px;
+                border: 1px solid #ffffff20;
+                border-radius: 99px;
+                background: #080b09d9;
+                color: #fff;
+                font-size: 11px;
+                white-space: nowrap;
+                pointer-events: none;
+                opacity: 0;
+                transition: opacity .15s
+            }
+
+            .globe-tooltip.show {
+                opacity: 1
+            }
+
+            .globe-footer {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 13px 2px 1px
+            }
+
+            .selected-location {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                min-width: 0
+            }
+
+            .selected-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--accent);
+                box-shadow: 0 0 12px #d7df1f
+            }
+
+            .selected-location strong {
+                font-size: 12px
+            }
+
+            .selected-location small {
+                display: block;
+                margin-top: 3px;
+                color: #ffffff65;
+                font-size: 10px
+            }
+
+            .globe-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px
+            }
+
+            .globe-action {
+                border: 1px solid #ffffff17;
+                border-radius: 99px;
+                padding: 8px 12px;
+                background: #ffffff08;
+                color: #ffffffb5;
+                font-size: 10px;
+                cursor: pointer;
+                transition: .2s
+            }
+
+            .globe-action:hover {
+                background: #ffffff13;
+                color: #fff
+            }
+
+            .globe-action.primary {
+                background: #d7df1f;
+                color: #171906;
+                border-color: #d7df1f;
+                font-weight: 750
+            }
+
+            .globe-action.primary:hover {
+                background: #e7ef55
+            }
+
+            .globe-divider {
+                height: 1px;
+                background: #ffffff13;
+                margin: 13px 0 11px
+            }
+
+            .poki-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px
+            }
+
+            .poki-info {
+                display: flex;
+                align-items: center;
+                gap: 10px
+            }
+
+            .poki-icon {
+                width: 31px;
+                height: 31px;
+                border-radius: 10px;
+                display: grid;
+                place-items: center;
+                background: #ffffff10;
+                color: var(--accent);
+                font-size: 15px
+            }
+
+            .poki-info strong {
+                display: block;
+                font-size: 12px
+            }
+
+            .poki-info small {
+                display: block;
+                margin-top: 3px;
+                color: #ffffff60;
+                font-size: 10px
+            }
+
+            .poki-select {
+                padding: 8px 14px;
+                border-radius: 99px;
+                border: 1px solid #ffffff20;
+                background: #ffffff0b;
+                font-size: 10px;
+                cursor: pointer
+            }
+
+            .poki-select.active {
+                background: #d7df1f;
+                color: #171906;
+                border-color: #d7df1f;
+                font-weight: 750
+            }
+
+            .modes {
+                display: flex;
+                flex-direction: column;
+                gap: 12px
+            }
+
+            .mode {
+                position: relative;
+                display: block;
+                width: 100%;
+                height: 92px;
+                padding: 0;
+                border: 0;
+                border-radius: 22px;
+                background: #181a09;
+                text-align: left;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: 0 10px 30px #0004
+            }
+
+            .mode-bg,.mode-art-bg,.mode-wash {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: inherit
+            }
+
+            .mode-art-bg {
+                object-fit: cover;
+                opacity: .9
+            }
+
+            .mode-wash {
+                background: linear-gradient(90deg,#0e1004dd,#0e100499 45%,#0e10041f),linear-gradient(0deg,#080a0259,transparent 55%)
+            }
+
+            .mode-crowd {
+                position: absolute;
+                inset: 0;
+                overflow: hidden
+            }
+
+            .mode-char {
+                position: absolute;
+                bottom: -4%;
+                width: auto;
+                transform: translateX(-50%);
+                filter: drop-shadow(0 4px 8px #0008);
+                pointer-events: none
+            }
+
+            .mode-char.is-jake {
+                bottom: -2%
+            }
+
+            .mode-jake {
+                position: absolute;
+                z-index: 1;
+                left: -6%;
+                bottom: -30px;
+                height: 138%;
+                width: auto;
+                pointer-events: none;
+                filter: drop-shadow(0 6px 10px #0009)
+            }
+
+            .mode-train {
+                position: absolute;
+                right: -7%;
+                bottom: -6px;
+                height: 114%;
+                width: auto;
+                max-width: 53%;
+                object-fit: contain
+            }
+
+            .mode-text {
+                position: absolute;
+                z-index: 3;
+                top: 0;
+                bottom: 0;
+                left: 7%;
+                right: 30%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 5px;
+                pointer-events: none
+            }
+
+            .mode-horror .mode-text {
+                left: 36%;
+                right: auto
+            }
+
+            .mode-title {
+                font-size: 17px;
+                font-weight: 650;
+                letter-spacing: -.3px;
+                text-shadow: 0 2px 8px #0008
+            }
+
+            .mode-sub {
+                font-size: 12px;
+                color: #ffffffa8
+            }
+
+            .mode-arrow {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                vertical-align: middle;
+                margin-left: 5px;
+                color: #ffffff99;
+                transition: transform .2s
+            }
+
+            .mode:hover .mode-arrow {
+                transform: translateX(4px);
+                color: var(--accent)
+            }
+
+            .game-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 999999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #050603c2;
+                backdrop-filter: blur(20px);
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: .3s
+            }
+
+            .game-loader.active {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto
+            }
+
+            .game-loader-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px
+            }
+
+            .game-loader-spinner {
+                width: 38px;
+                height: 38px;
+                border: 2px solid #d7df1f20;
+                border-top-color: var(--accent);
+                border-right-color: #d7df1f8c;
+                border-radius: 50%;
+                animation: spin .8s linear infinite;
+                filter: drop-shadow(0 0 9px #d7df1f4d)
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg)
+                }
+            }
+
+            .game-loader-title {
+                font-size: 15px;
+                font-weight: 650
+            }
+
+            .game-loader-subtitle {
+                font-size: 11px;
+                color: #ffffff70
+            }
+
+            .game-loader-bar {
+                width: 110px;
+                height: 2px;
+                background: #ffffff17;
+                overflow: hidden;
+                border-radius: 9px
+            }
+
+            .game-loader-bar:after {
+                content: "";
+                display: block;
+                width: 40%;
+                height: 100%;
+                background: var(--accent);
+                animation: load 1s ease-in-out infinite
+            }
+
+            @keyframes load {
+                to {
+                    transform: translateX(280%)
+                }
+            }
+
+            @media(max-width: 1100px) {
+                .hub {
+                    grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)
+                }
+
+                .col-side {
+                    display: none
+                }
+            }
+
+            @media(max-width: 760px) {
+                .hub {
+                    grid-template-columns:1fr;
+                    gap: 12px;
+                    padding: 12px 8px 40px
+                }
+
+                .greeting {
+                    height: 48px
+                }
+
+                .greeting-line {
+                    font-size: 21px
+                }
+
+                .ss-card {
+                    border-radius: 25px
+                }
+
+                .ss-content {
+                    padding: 6% 0 6% 5%
+                }
+
+                .ss-copy {
+                    width: 61%
+                }
+
+                .ss-logo {
+                    width: 85%
+                }
+
+                .ss-description {
+                    width: 92%
+                }
+
+                .ss-play {
+                    padding: 10px 17px 10px 12px;
+                    gap: 7px
+                }
+
+                .ss-map-trigger {
+                    gap: 6px;
+                    padding: 10px 11px
+                }
+
+                .ss-actions {
+                    gap: 8px
+                }
+
+                .ss-character {
+                    max-width: 57%
+                }
+
+                .globe-popover {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%,-50%);
+                    width: calc(100vw - 24px);
+                    max-width: 560px;
+                    animation: mobilepop .2s ease
+                }
+
+                .globe-stage {
+                    height: min(58vh,330px)
+                }
+
+                @keyframes mobilepop {
+                    from {
+                        opacity: 0;
+                        transform: translate(-50%,-47%) scale(.97)
+                    }
+
+                    to {
+                        opacity: 1;
+                        transform: translate(-50%,-50%) scale(1)
+                    }
+                }
+            }
+
+            @media(prefers-reduced-motion:reduce) {
+                *,*::before,*::after {
+                    animation-duration: .01ms!important;
+                    animation-iteration-count: 1!important;
+                    transition-duration: .01ms!important
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="game-loader" id="game-loader" aria-hidden="true">
+            <div class="game-loader-content">
+                <div class="game-loader-spinner"></div>
+                <div class="game-loader-title" id="loader-title">Launching game</div>
+                <div class="game-loader-subtitle">Preparing your experience</div>
+                <div class="game-loader-bar"></div>
+            </div>
+        </div>
+        <main class="hub">
+            <section class="col col-left" aria-label="Featured game">
+                <div class="greeting">
+                    <div class="greeting-line">
+                        <span id="greeting">Good afternoon,</span>
+                        <span class="greeting-name">
+                            <span id="gname">there</span>.
+                        </span>
+                    </div>
+                </div>
+                <div class="ss-card" id="ss-card">
+                    <img class="ss-background" src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
+                    <div class="ss-background-wash"></div>
+                    <div class="ss-background-vignette"></div>
+                    <div class="ss-ambient ss-ambient-one"></div>
+                    <div class="ss-ambient ss-ambient-two"></div>
+                    <img class="ss-character" src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
+                    <div class="ss-content">
+                        <div class="ss-copy">
+                            <img class="ss-logo" src="https://i.ibb.co/R4Mm1TwN/Surfers-Logo-from-Photopea.png" alt="Subway Surfers">
+                            <p class="ss-description">Jump over trains while being chased by a cop idk. Probably some dark, big brain lore in there...</p>
+                            <div class="ss-actions">
+                                <button class="ss-play fx" id="play" type="button">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                    <span>Play</span>
+                                </button>
+                                <div style="position:relative">
+                                    <button class="ss-map-trigger fx" id="map-trigger" type="button" aria-expanded="false" aria-haspopup="dialog">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>
+                                        </svg>
+                                        <span id="map-label">Poki</span>
+                                        <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m7 14 5-5 5 5"/>
+                                        </svg>
+                                    </button>
+                                    <div class="globe-popover" id="globe-popover" role="dialog" aria-label="Choose a Subway Surfers location" hidden>
+                                        <div class="globe-heading">
+                                            <strong>Choose your destination</strong>
+                                            <span>SUBWAY SURFERS WORLD TOUR</span>
+                                        </div>
+                                        <div class="globe-stage" id="globe-stage">
+                                            <canvas id="earth-canvas"></canvas>
+                                            <div class="globe-tooltip" id="globe-tooltip"></div>
+                                            <div class="globe-hint">DRAG TO ROTATE · SCROLL TO ZOOM · SELECT A PIN</div>
+                                        </div>
+                                        <div class="globe-footer">
+                                            <div class="selected-location">
+                                                <span class="selected-dot"></span>
+                                                <div>
+                                                    <strong id="selected-city">Poki</strong>
+                                                    <small id="selected-caption">Play the standard version</small>
+                                                </div>
+                                            </div>
+                                            <div class="globe-actions">
+                                                <button class="globe-action" id="globe-reset" type="button">Reset view</button>
+                                                <button class="globe-action primary" id="globe-confirm" type="button">Select location</button>
+                                            </div>
+                                        </div>
+                                        <div class="globe-divider"></div>
+                                        <div class="poki-row">
+                                            <div class="poki-info">
+                                                <span class="poki-icon">P</span>
+                                                <div>
+                                                    <strong>Poki</strong>
+                                                    <small>Standard version · Not on the map</small>
+                                                </div>
+                                            </div>
+                                            <button class="poki-select" id="poki-select" type="button">Choose Poki</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="position:absolute;inset:0;border:1px solid #ffffff0a;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 #ffffff12"></div>
+                </div>
+                <p id="launch-line" style="padding:0 22px;font-size:11px;color:#ffffff61">Launches: 0</p>
+            </section>
+            <section class="col col-middle" aria-label="Game modes">
+                <div style="height:56px"></div>
+                <div class="modes">
+                    <button class="mode mode-multi" type="button" data-mode="multiplayer">
+                        <span class="mode-bg">
+                            <img class="mode-art-bg" src="https://s1.dmcdn.net/v/aPhRC1foMxlLzf-Bf/x1080" alt="">
+                            <span class="mode-wash"></span>
+                            <span class="mode-crowd" id="crowd"></span>
+                        </span>
+                        <span class="mode-text">
+                            <span class="mode-title">
+                                Multiplayer <span class="mode-arrow">›</span>
+                            </span>
+                            <span class="mode-sub">Play with friends</span>
+                        </span>
+                    </button>
+                    <button class="mode mode-horror" type="button" data-mode="horror">
+                        <span class="mode-bg">
+                            <img class="mode-art-bg" src="https://brunecoding.github.io/ArborUltra/HorrorBG.png" alt="">
+                            <span class="mode-wash"></span>
+                            <img class="mode-train" src="https://brunecoding.github.io/ArborUltra/TrainHorror.png" alt="" style="transform:rotateY(180deg)">
+                        </span>
+                        <img class="mode-jake" src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
+                        <span class="mode-text">
+                            <span class="mode-title">
+                                Subway Suffers <span class="mode-arrow">›</span>
+                            </span>
+                        </span>
+                    </button>
+                </div>
+            </section>
+            <aside class="col col-side" aria-label="Sidebar"></aside>
+        </main>
+        <script type="module">
+            import*as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+            ( () => {
+                const $ = s => document.querySelector(s);
+                const POKI_URL = "https://poki.com/en/g/subway-surfers";
+                const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
+                const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
+                const MULTIPLAYER_URL = "https://brunecoding.github.io/Subway-Surfers-Multiplayer/index.html?mp=1";
+                const STORE_KEY = "arborHubLastPlayed";
+                const CHAR_BASE = "https://5dd312fa-015f-11ea-ad56-9cb6d0d995f7.gdn.poki.com/ec5c789a-69d7-476d-aa4e-1a0064850d79/assets/character-previews/preview-";
+                const CROWD_POOL = ["boombot", "costa", "danunder", "dino", "frank", "princek", "tricky", "tagbot", "tasha", "rudyrascal", "spike", "lily", "king"];
+                const MAPS = [["Hong Kong", "193-hongkong", 22.3193, 114.1694], ["Singapore", "177-singapore", 1.3521, 103.8198], ["Tokyo", "184-tokyo", 35.6762, 139.6503], ["Seoul", "1103-seoul", 37.5665, 126.978], ["Bali", "1106-bali", -8.4095, 115.1889], ["Mumbai", "189-mumbai", 19.076, 72.8777], ["Marrakesh", "195-marrakesh", 31.6295, -7.9811], ["Cairo", "1116-cairo", 30.0444, 31.2357], ["Venice", "199-venice", 45.4408, 12.3155], ["Iceland", "1117-iceland", 64.1466, -21.9426], ["Havana", "190-havana", 23.1136, -82.3666], ["New York", "191-newyork", 40.7128, -74.006], ["Atlanta", "198-atlanta", 33.749, -84.388]];
+                const THEMES = Object.fromEntries(MAPS.map( ([name,theme]) => [name, theme]));
+                let selectedMap = "Poki";
+                let launching = false;
+                const loader = $("#game-loader");
+                let loaderTimer;
+                function showLoader(title) {
+                    clearTimeout(loaderTimer);
+                    $("#loader-title").textContent = "Launching " + title;
+                    loader.classList.add("active");
+                    loader.setAttribute("aria-hidden", "false");
+                    loaderTimer = setTimeout(hideLoader, 1800);
+                }
+                function hideLoader() {
+                    clearTimeout(loaderTimer);
+                    loader.classList.remove("active");
+                    loader.setAttribute("aria-hidden", "true");
+                    launching = false;
+                }
+                function countLaunch() {
+                    try {
+                        const n = Number(JSON.parse(localStorage.getItem(STORE_KEY) || "null")?.count) || 0;
+                        localStorage.setItem(STORE_KEY, JSON.stringify({
+                            count: n + 1
+                        }));
+                        $("#launch-line").textContent = "Launches: " + (n + 1);
+                    } catch {}
+                }
+                try {
+                    $("#launch-line").textContent = "Launches: " + (Number(JSON.parse(localStorage.getItem(STORE_KEY) || "null")?.count) || 0);
+                } catch {}
+                function launchGame(url, title) {
+                    if (launching)
+                        return;
+                    launching = true;
+                    showLoader(title);
+                    const tab = window.open(url, "_blank", "noopener");
+                    if (!tab) {
+                        hideLoader();
+                        return;
+                    }
+                    countLaunch();
+                }
+                function readName() {
+                    let name = window.ARBOR_HUB?.username || "";
+                    if (!name && location.hash.length > 1) {
+                        try {
+                            name = decodeURIComponent(location.hash.slice(1));
+                        } catch {
+                            name = location.hash.slice(1);
+                        }
+                    }
+                    return String(name).trim().split(/\s+/)[0] || "there";
+                }
+                function setUser(name) {
+                    $("#gname").textContent = String(name || "").trim().split(/\s+/)[0] || "there";
+                }
+                setUser(readName());
+                const hour = new Date().getHours();
+                $("#greeting").textContent = hour < 12 ? "Good morning," : hour < 18 ? "Good afternoon," : "Good evening,";
+                window.addEventListener("hashchange", () => {
+                    if (!window.ARBOR_HUB)
+                        setUser(readName());
+                }
+                );
+                window.addEventListener("message", e => {
+                    if (e.source === window.parent && e.data?.type === "arbor-user")
+                        setUser(e.data.username);
+                }
+                );
+
+                // Build the decorative crowd in the multiplayer card.
+                const pool = [...CROWD_POOL].sort( () => Math.random() - .5).slice(0, 8);
+                const names = [...pool.slice(0, 4), "jake", ...pool.slice(4)];
+                names.forEach( (name, i) => {
+                    const img = document.createElement("img");
+                    img.className = "mode-char" + (name === "jake" ? " is-jake" : "");
+                    img.alt = "";
+                    img.src = CHAR_BASE + name + ".webp";
+                    img.style.left = (8 + i * (84 / (names.length - 1))) + "%";
+                    img.style.height = (name === "jake" ? 124 : 108 - Math.abs(i - 4) * 4) + "%";
+                    img.style.zIndex = String(20 - Math.abs(i - 4) * 2);
+                    $("#crowd").appendChild(img);
+                }
+                );
+
+                // Three.js globe scene.
+                const stage = $("#globe-stage")
+                  , canvas = $("#earth-canvas")
+                  , tooltip = $("#globe-tooltip");
+                let scene, camera, renderer, earthGroup, earthMesh, pinMeshes = [], raycaster, mouse;
+                let globeReady = false
+                  , raf = 0
+                  , dragging = false
+                  , downX = 0
+                  , downY = 0
+                  , prevX = 0
+                  , prevY = 0
+                  , moved = false;
+                const targetRotation = {
+                    x: 0,
+                    y: 0
+                }
+                  , currentRotation = {
+                    x: 0,
+                    y: 0
+                };
+                const textureLoader = new THREE.TextureLoader();
+                const pinMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xd7df1f
+                });
+                const pinGeometry = new THREE.SphereGeometry(.024,12,10);
+                function latLonToVector(lat, lon, r=1.025) {
+                    const phi = (90 - lat) * Math.PI / 180
+                      , theta = (lon + 180) * Math.PI / 180;
+                    return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(theta),r * Math.cos(phi),r * Math.sin(phi) * Math.sin(theta));
+                }
+                function makePin(map, index) {
+                    const [name,theme,lat,lon] = map;
+                    const group = new THREE.Group();
+                    const pos = latLonToVector(lat, lon, 1.012);
+                    group.position.copy(pos);
+                    group.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), pos.clone().normalize());
+                    const stem = new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.045,6),new THREE.MeshBasicMaterial({
+                        color: 0xd7df1f
+                    }));
+                    stem.position.y = .025;
+                    group.add(stem);
+                    const dot = new THREE.Mesh(pinGeometry,pinMaterial.clone());
+                    dot.position.y = .052;
+                    group.add(dot);
+                    const halo = new THREE.Mesh(new THREE.RingGeometry(.028,.038,24),new THREE.MeshBasicMaterial({
+                        color: 0xd7df1f,
+                        transparent: true,
+                        opacity: .65,
+                        side: THREE.DoubleSide
+                    }));
+                    halo.rotation.x = -Math.PI / 2;
+                    halo.position.y = .008;
+                    group.add(halo);
+                    group.userData = {
+                        name,
+                        theme,
+                        index
+                    };
+                    earthGroup.add(group);
+                    pinMeshes.push(dot);
+                    return group;
+                }
+                function initGlobe() {
+                    if (globeReady)
+                        return;
+                    globeReady = true;
+                    scene = new THREE.Scene();
+                    camera = new THREE.PerspectiveCamera(34,1,.1,100);
+                    camera.position.set(0, 0, 4.25);
+                    renderer = new THREE.WebGLRenderer({
+                        canvas,
+                        antialias: true,
+                        alpha: true
+                    });
+                    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+                    renderer.outputColorSpace = THREE.SRGBColorSpace;
+                    scene.add(new THREE.AmbientLight(0xffffff,1.45));
+                    const key = new THREE.DirectionalLight(0xffffff,2.0);
+                    key.position.set(4, 2, 5);
+                    scene.add(key);
+                    earthGroup = new THREE.Group();
+                    scene.add(earthGroup);
+                    const geometry = new THREE.SphereGeometry(1,48,36);
+                    const material = new THREE.MeshStandardMaterial({
+                        color: 0x9eb8a2,
+                        roughness: 1,
+                        metalness: 0
+                    });
+                    earthMesh = new THREE.Mesh(geometry,material);
+                    earthGroup.add(earthMesh);
+                    textureLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg", texture => {
+                        texture.colorSpace = THREE.SRGBColorSpace;
+                        material.map = texture;
+                        material.color.set(0xffffff);
+                        material.needsUpdate = true;
+                    }
+                    , undefined, () => {
+                        material.color.set(0x426b62);
+                    }
+                    );
+                    // Fine triangular overlay gives the planet a subtle low-poly finish.
+                    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.003,3),new THREE.MeshBasicMaterial({
+                        color: 0xc7dfc8,
+                        wireframe: true,
+                        transparent: true,
+                        opacity: .075
+                    }));
+                    earthGroup.add(wire);
+                    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.045,48,36),new THREE.MeshBasicMaterial({
+                        color: 0x76b8a1,
+                        transparent: true,
+                        opacity: .075,
+                        side: THREE.BackSide
+                    }));
+                    earthGroup.add(atmosphere);
+                    MAPS.forEach(makePin);
+                    const starsGeo = new THREE.BufferGeometry()
+                      , starPositions = [];
+                    for (let i = 0; i < 450; i++) {
+                        const v = new THREE.Vector3().randomDirection().multiplyScalar(2.4 + Math.random() * 2);
+                        starPositions.push(v.x, v.y, v.z);
+                    }
+                    starsGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPositions,3));
+                    scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({
+                        color: 0xc5d8b8,
+                        size: .012,
+                        transparent: true,
+                        opacity: .5
+                    })));
+                    raycaster = new THREE.Raycaster();
+                    mouse = new THREE.Vector2();
+                    resizeGlobe();
+                    window.addEventListener("resize", resizeGlobe);
+                    animate();
+                }
+                function resizeGlobe() {
+                    if (!renderer || !camera)
+                        return;
+                    const w = stage.clientWidth
+                      , h = stage.clientHeight;
+                    renderer.setSize(w, h, false);
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                }
+                function animate() {
+                    raf = requestAnimationFrame(animate);
+                    if (!dragging) {
+                        targetRotation.y += .0008;
+                    }
+                    currentRotation.x += (targetRotation.x - currentRotation.x) * .08;
+                    currentRotation.y += (targetRotation.y - currentRotation.y) * .08;
+                    earthGroup.rotation.x = currentRotation.x;
+                    earthGroup.rotation.y = currentRotation.y;
+                    renderer.render(scene, camera);
+                }
+                function selectMap(name) {
+                    selectedMap = name;
+                    $("#map-label").textContent = name;
+                    $("#selected-city").textContent = name;
+                    $("#selected-caption").textContent = name === "Poki" ? "Play the standard version" : "World Tour destination";
+                    $("#poki-select").classList.toggle("active", name === "Poki");
+                    $("#poki-select").textContent = name === "Poki" ? "Selected" : "Choose Poki";
+                    $("#globe-confirm").textContent = name === "Poki" ? "Selected" : "Select location";
+                    if (earthGroup) {
+                        earthGroup.traverse(o => {
+                            if (o.isMesh && o.geometry === pinGeometry && o.material?.color) {
+                                const active = o.parent?.userData?.name === name;
+                                o.scale.setScalar(active ? 1.55 : 1);
+                                o.material.color.set(active ? 0xffffff : 0xd7df1f);
+                            }
+                        }
+                        );
+                    }
+                }
+                function openPicker(open) {
+                    const pop = $("#globe-popover");
+                    pop.hidden = !open;
+                    $("#map-trigger").setAttribute("aria-expanded", String(open));
+                    if (open) {
+                        initGlobe();
+                        requestAnimationFrame(resizeGlobe);
+                    }
+                }
+                $("#map-trigger").addEventListener("click", e => {
+                    e.stopPropagation();
+                    openPicker($("#globe-popover").hidden);
+                }
+                );
+                $("#poki-select").addEventListener("click", () => selectMap("Poki"));
+                $("#globe-confirm").addEventListener("click", () => {
+                    openPicker(false);
+                }
+                );
+                $("#globe-reset").addEventListener("click", () => {
+                    targetRotation.x = 0;
+                    targetRotation.y = 0;
+                    camera.position.set(0, 0, 4.25);
+                }
+                );
+                document.addEventListener("pointerdown", e => {
+                    if (!$("#globe-popover").contains(e.target) && !$("#map-trigger").contains(e.target))
+                        openPicker(false);
+                }
+                );
+                document.addEventListener("keydown", e => {
+                    if (e.key === "Escape")
+                        openPicker(false);
+                }
+                );
+                function pickAt(event) {
+                    const rect = canvas.getBoundingClientRect();
+                    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    const hits = raycaster.intersectObjects(pinMeshes, false);
+                    if (hits.length) {
+                        const pin = hits[0].object
+                          , parent = pin.parent;
+                        if (parent?.userData?.name) {
+                            selectMap(parent.userData.name);
+                            tooltip.textContent = parent.userData.name;
+                            tooltip.classList.add("show");
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                stage.addEventListener("pointerdown", e => {
+                    dragging = true;
+                    moved = false;
+                    downX = prevX = e.clientX;
+                    downY = prevY = e.clientY;
+                    stage.setPointerCapture(e.pointerId);
+                }
+                );
+                stage.addEventListener("pointermove", e => {
+                    if (dragging) {
+                        const dx = e.clientX - prevX
+                          , dy = e.clientY - prevY;
+                        if (Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY) > 4)
+                            moved = true;
+                        targetRotation.y += dx * .006;
+                        targetRotation.x = Math.max(-1.25, Math.min(1.25, targetRotation.x + dy * .006));
+                        prevX = e.clientX;
+                        prevY = e.clientY;
+                    } else {
+                        const hit = pickAt(e);
+                        if (!hit)
+                            tooltip.classList.remove("show");
+                    }
+                }
+                );
+                stage.addEventListener("pointerup", e => {
+                    dragging = false;
+                    if (!moved)
+                        pickAt(e);
+                }
+                );
+                stage.addEventListener("pointercancel", () => dragging = false);
+                stage.addEventListener("wheel", e => {
+                    e.preventDefault();
+                    camera.position.z = Math.max(2.8, Math.min(6, camera.position.z + e.deltaY * .002));
+                }
+                , {
+                    passive: false
+                });
+                $("#play").addEventListener("click", () => {
+                    const theme = THEMES[selectedMap];
+                    launchGame(theme ? THEME_BASE + theme : POKI_URL, "Subway Surfers");
+                }
+                );
+                document.querySelectorAll(".mode").forEach(button => button.addEventListener("click", () => {
+                    const mode = button.dataset.mode;
+                    if (mode === "multiplayer")
+                        launchGame(MULTIPLAYER_URL, "Subway Surfers Multiplayer");
+                    if (mode === "horror")
+                        launchGame(HORROR_URL, "Subway Suffers");
+                }
+                ));
+            }
+            )();
+        </script>
+    </body>
+</html>
