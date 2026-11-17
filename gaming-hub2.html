@@ -34,12 +34,28 @@
                 color: inherit
             }
 
+            p {
+                margin: 0
+            }
+
             *::-webkit-scrollbar {
                 display: none
             }
 
             * {
                 scrollbar-width: none
+            }
+
+            .icon {
+                display: inline-block;
+                flex: none;
+                width: 1em;
+                height: 1em;
+                fill: none;
+                stroke: currentColor;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round
             }
 
             .hub {
@@ -55,6 +71,12 @@
                 flex-direction: column;
                 gap: 16px;
                 min-width: 0
+            }
+
+            /* FIX: keep the left column (and its popover) above the middle column */
+            .col-left {
+                position: relative;
+                z-index: 5
             }
 
             .greeting {
@@ -79,12 +101,12 @@
 
             .ss-card {
                 position: relative;
+                z-index: 5;
                 width: 100%;
                 aspect-ratio: 1738/700;
                 min-height: 240px;
                 overflow: visible;
                 isolation: isolate;
-                container-type: inline-size;
                 border-radius: 40px;
                 background: #181a09;
                 box-shadow: 0 18px 55px #0003
@@ -162,13 +184,16 @@
                 pointer-events: none
             }
 
+            /* FIX: container-type moved here (not on .ss-card) so it no longer traps the
+   position:fixed mobile popover inside the card */
             .ss-content {
                 position: absolute;
                 inset: 0;
                 z-index: 2;
                 display: flex;
                 padding: 5% 0 5% 5%;
-                pointer-events: none
+                pointer-events: none;
+                container-type: inline-size
             }
 
             .ss-copy {
@@ -271,65 +296,79 @@
                 transform: rotate(180deg)
             }
 
-            /* 3D location picker */
+            /* ---------- 3D destination picker ---------- */
             .globe-popover {
                 position: absolute;
-                top: calc(100% + 14px);
-                left: 0;
+                top: calc(100% + 30px);
+                left: 5%;
                 z-index: 500;
-                width: min( min(680px, calc(100vw - 32px)), 82vw);
-                padding: 16px;
-                border: 1px solid #ffffff20;
+                width: min(680px,calc(100vw - 32px));
+                padding: 15px;
+                border: 1px solid #ffffff1c;
                 border-radius: 25px;
-                background: linear-gradient(145deg,rgba(30,33,25,.96),rgba(12,14,12,.97));
-                box-shadow: 0 24px 80px #000b,inset 0 1px 0 #ffffff15;
-                backdrop-filter: blur(28px) saturate(145%);
+                background: rgba(10,13,12,.94);
+                box-shadow: 0 24px 80px #000b,inset 0 1px 0 #ffffff12;
+                backdrop-filter: blur(28px) saturate(135%);
                 transform-origin: top left;
-                animation: pop .22s cubic-bezier(.2,.8,.2,1)
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transform: translateY(-7px) scale(.985);
+                transition: opacity .22s cubic-bezier(.22,1,.36,1),transform .28s cubic-bezier(.22,1,.36,1),visibility .28s
+            }
+
+            .globe-popover.is-open {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+                transform: translateY(0) scale(1)
             }
 
             .globe-popover[hidden] {
                 display: none
             }
 
-            @keyframes pop {
-                from {
-                    opacity: 0;
-                    transform: translateY(-8px) scale(.975)
-                }
-
-                to {
-                    opacity: 1;
-                    transform: none
-                }
+            .globe-heading {
+                position: relative;
+                z-index: 3;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                height: 30px;
+                padding: 0 4px;
+                pointer-events: none
             }
 
-            .globe-heading {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 2px 3px 12px
+            .globe-heading .icon {
+                width: 18px;
+                height: 18px;
+                color: var(--accent);
+                filter: drop-shadow(0 0 8px #d7df1f55)
             }
 
             .globe-heading strong {
-                font-size: 14px;
-                letter-spacing: -.2px
+                font-size: 15px;
+                font-weight: 650;
+                letter-spacing: -.3px
             }
 
-            .globe-heading span {
-                font-size: 10px;
-                color: #ffffff70
-            }
-
+            /* Globe stage: no border, no background, no shadow, no clipping.
+   It overlaps the heading and pokes out of the top of the popup. */
             .globe-stage {
                 position: relative;
-                height: 310px;
-                overflow: hidden;
-                border-radius: 19px;
-                background: radial-gradient(ellipse at 50% 46%,#263328 0%,#111a17 48%,#0a0d0d 100%);
-                border: 1px solid #ffffff0d;
+                z-index: 2;
+                height: 430px;
+                margin: -74px -15px 0;
+                overflow: visible;
+                background: none;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                outline: 0;
                 cursor: grab;
-                touch-action: pan-y
+                touch-action: none;
+                isolation: isolate;
+                -webkit-tap-highlight-color: transparent
             }
 
             .globe-stage:active {
@@ -339,114 +378,171 @@
             #earth-canvas {
                 display: block;
                 width: 100%;
-                height: 100%
+                height: 100%;
+                background: none;
+                border: 0;
+                outline: 0
             }
 
-            .globe-hint {
+            .globe-hover-label {
                 position: absolute;
-                left: 13px;
-                bottom: 11px;
-                font-size: 10px;
-                color: #ffffff65;
-                pointer-events: none;
-                text-shadow: 0 1px 5px #000
-            }
-
-            .globe-tooltip {
-                position: absolute;
-                top: 12px;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 7px 11px;
+                top: 0;
+                left: 0;
+                z-index: 8;
+                transform: translate(-50%,-125%);
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                padding: 6px 10px;
                 border: 1px solid #ffffff20;
                 border-radius: 99px;
-                background: #080b09d9;
+                background: rgba(8,11,9,.88);
+                backdrop-filter: blur(12px);
                 color: #fff;
                 font-size: 11px;
                 white-space: nowrap;
                 pointer-events: none;
                 opacity: 0;
-                transition: opacity .15s
+                transition: opacity .14s cubic-bezier(.22,1,.36,1)
             }
 
-            .globe-tooltip.show {
+            .globe-hover-label .icon {
+                width: 12px;
+                height: 12px;
+                color: var(--accent)
+            }
+
+            .globe-hover-label.show {
                 opacity: 1
             }
 
-            .globe-footer {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-                padding: 13px 2px 1px
+            .globe-place-card {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 7;
+                transform: translate(-50%,-110%) scale(.97);
+                width: 180px;
+                overflow: hidden;
+                border: 1px solid #ffffff24;
+                border-radius: 14px;
+                background: rgba(8,11,10,.88);
+                backdrop-filter: blur(18px);
+                box-shadow: 0 10px 35px #0009;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transition: opacity .18s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1),visibility .22s
             }
 
-            .selected-location {
-                display: flex;
-                align-items: center;
-                gap: 9px;
-                min-width: 0
+            .globe-place-card.show {
+                opacity: 1;
+                visibility: visible;
+                transform: translate(-50%,-110%) scale(1)
             }
 
-            .selected-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: var(--accent);
-                box-shadow: 0 0 12px #d7df1f
-            }
-
-            .selected-location strong {
-                font-size: 12px
-            }
-
-            .selected-location small {
+            .globe-place-card img {
                 display: block;
-                margin-top: 3px;
-                color: #ffffff65;
-                font-size: 10px
+                width: 100%;
+                height: 88px;
+                object-fit: cover;
+                background: #17201b
             }
 
-            .globe-actions {
+            .globe-place-copy {
+                padding: 9px 11px 11px
+            }
+
+            .globe-place-copy strong {
                 display: flex;
                 align-items: center;
-                gap: 8px
+                gap: 5px;
+                font-size: 13px;
+                font-weight: 700;
+                margin-bottom: 4px
             }
 
-            .globe-action {
-                border: 1px solid #ffffff17;
-                border-radius: 99px;
-                padding: 8px 12px;
-                background: #ffffff08;
-                color: #ffffffb5;
+            .globe-place-copy strong .icon {
+                width: 13px;
+                height: 13px;
+                color: var(--accent)
+            }
+
+            .globe-place-copy p {
                 font-size: 10px;
-                cursor: pointer;
-                transition: .2s
+                line-height: 1.4;
+                color: #ffffffa8
             }
 
-            .globe-action:hover {
+            .globe-controls {
+                position: absolute;
+                right: 24px;
+                bottom: 22px;
+                z-index: 12;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                padding: 5px;
+                border: 1px solid #ffffff20;
+                border-radius: 999px;
+                background: rgba(8,12,10,.62);
+                backdrop-filter: blur(18px) saturate(140%);
+                opacity: .6;
+                transform: translateY(3px);
+                transition: opacity .2s cubic-bezier(.22,1,.36,1),transform .2s cubic-bezier(.22,1,.36,1);
+                pointer-events: auto;
+                cursor: default
+            }
+
+            .globe-stage:hover .globe-controls,.globe-controls:focus-within {
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            .globe-control-btn {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 7px 11px;
+                border: 0;
+                border-radius: 999px;
+                background: transparent;
+                color: #ffffffc9;
+                font-size: 11px;
+                white-space: nowrap;
+                cursor: pointer;
+                transition: background .18s,color .18s
+            }
+
+            .globe-control-btn .icon {
+                width: 13px;
+                height: 13px
+            }
+
+            .globe-control-btn:hover {
                 background: #ffffff13;
                 color: #fff
             }
 
-            .globe-action.primary {
+            .globe-control-btn.active {
                 background: #d7df1f;
                 color: #171906;
-                border-color: #d7df1f;
-                font-weight: 750
+                font-weight: 700
             }
 
-            .globe-action.primary:hover {
-                background: #e7ef55
+            .globe-control-btn.active .icon {
+                animation: spin 3s linear infinite
             }
 
             .globe-divider {
                 height: 1px;
-                background: #ffffff13;
-                margin: 13px 0 11px
+                background: #ffffff12;
+                margin: 12px 0
             }
 
             .poki-row {
+                position: relative;
+                z-index: 3;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -460,14 +556,20 @@
             }
 
             .poki-icon {
-                width: 31px;
-                height: 31px;
-                border-radius: 10px;
+                width: 30px;
+                height: 30px;
+                border-radius: 9px;
                 display: grid;
                 place-items: center;
-                background: #ffffff10;
-                color: var(--accent);
-                font-size: 15px
+                overflow: hidden;
+                background: #ffffff10
+            }
+
+            .poki-icon img,.poki-icon svg {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: cover
             }
 
             .poki-info strong {
@@ -475,20 +577,26 @@
                 font-size: 12px
             }
 
-            .poki-info small {
-                display: block;
-                margin-top: 3px;
-                color: #ffffff60;
-                font-size: 10px
-            }
-
             .poki-select {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
                 padding: 8px 14px;
                 border-radius: 99px;
                 border: 1px solid #ffffff20;
                 background: #ffffff0b;
-                font-size: 10px;
-                cursor: pointer
+                font-size: 11px;
+                cursor: pointer;
+                transition: background .18s,color .18s
+            }
+
+            .poki-select .icon {
+                width: 13px;
+                height: 13px
+            }
+
+            .poki-select:hover {
+                background: #ffffff18
             }
 
             .poki-select.active {
@@ -498,10 +606,11 @@
                 font-weight: 750
             }
 
+            /* ---------- Game mode cards ---------- */
             .modes {
                 display: flex;
                 flex-direction: column;
-                gap: 12px
+                gap: 22px
             }
 
             .mode {
@@ -511,7 +620,7 @@
                 height: 92px;
                 padding: 0;
                 border: 0;
-                border-radius: 22px;
+                border-radius: 28px;
                 background: #181a09;
                 text-align: left;
                 overflow: hidden;
@@ -527,6 +636,10 @@
                 border-radius: inherit
             }
 
+            .mode-bg {
+                overflow: visible;
+            }
+
             .mode-art-bg {
                 object-fit: cover;
                 opacity: .9
@@ -534,46 +647,6 @@
 
             .mode-wash {
                 background: linear-gradient(90deg,#0e1004dd,#0e100499 45%,#0e10041f),linear-gradient(0deg,#080a0259,transparent 55%)
-            }
-
-            .mode-crowd {
-                position: absolute;
-                inset: 0;
-                overflow: hidden
-            }
-
-            .mode-char {
-                position: absolute;
-                bottom: -4%;
-                width: auto;
-                transform: translateX(-50%);
-                filter: drop-shadow(0 4px 8px #0008);
-                pointer-events: none
-            }
-
-            .mode-char.is-jake {
-                bottom: -2%
-            }
-
-            .mode-jake {
-                position: absolute;
-                z-index: 1;
-                left: -6%;
-                bottom: -30px;
-                height: 138%;
-                width: auto;
-                pointer-events: none;
-                filter: drop-shadow(0 6px 10px #0009)
-            }
-
-            .mode-train {
-                position: absolute;
-                right: -7%;
-                bottom: -6px;
-                height: 114%;
-                width: auto;
-                max-width: 53%;
-                object-fit: contain
             }
 
             .mode-text {
@@ -590,12 +663,10 @@
                 pointer-events: none
             }
 
-            .mode-horror .mode-text {
-                left: 36%;
-                right: auto
-            }
-
             .mode-title {
+                display: flex;
+                align-items: center;
+                gap: 6px;
                 font-size: 17px;
                 font-weight: 650;
                 letter-spacing: -.3px;
@@ -608,18 +679,99 @@
             }
 
             .mode-arrow {
-                display: inline-block;
-                width: 16px;
-                height: 16px;
-                vertical-align: middle;
-                margin-left: 5px;
+                width: 15px;
+                height: 15px;
                 color: #ffffff99;
-                transition: transform .2s
+                stroke-width: 2.2;
+                transition: transform .2s,color .2s
             }
 
             .mode:hover .mode-arrow {
                 transform: translateX(4px);
                 color: var(--accent)
+            }
+
+            /* Multiplayer: pill card, characters spread across the right, Jake pops out the top */
+            .mode-multi {
+                overflow: visible;
+                border-radius: 30px;
+                background: transparent;
+                box-shadow: none
+            }
+
+            .mode-multi .mode-bg {
+                background: radial-gradient(ellipse at 100% 0%,#8a2b2a66,transparent 60%),radial-gradient(ellipse at 45% 100%,#2a3a3a55,transparent 65%),#12130f
+            }
+
+            .mode-multi .mode-bg::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border: 1px solid #ffffff1f;
+                border-radius: inherit;
+                pointer-events: none
+            }
+
+            .mode-multi .mode-art-bg {
+                opacity: .55
+            }
+
+            .mode-multi .mode-wash {
+                background: linear-gradient(90deg,#0b0c08f2 0%,#0b0c08cc 28%,#0b0c0855 55%,#0b0c0833 100%)
+            }
+
+            .mode-multi .mode-text {
+                left: 10.5%;
+                right: auto
+            }
+
+            .mode-crowd {
+                position: absolute;
+                inset: 0;
+                z-index: 2;
+                pointer-events: none;
+                /* clip the sides and bottom to the pill, but let heads overflow the top */
+                clip-path: inset(-45% 0 0 0 round 0 0 30px 30px)
+            }
+
+            .mode-char {
+                position: absolute;
+                bottom: -4%;
+                width: auto;
+                transform: translateX(-50%);
+                filter: drop-shadow(0 4px 8px #0008);
+                pointer-events: none
+            }
+
+            .mode-char.is-jake {
+                bottom: -3%;
+                filter: drop-shadow(0 6px 10px #000a)
+            }
+
+            .mode-horror .mode-text {
+                left: 36%;
+                right: auto
+            }
+
+            .mode-train {
+                position: absolute;
+                right: -7%;
+                bottom: -6px;
+                height: 114%;
+                width: auto;
+                max-width: 53%;
+                object-fit: contain
+            }
+
+            .mode-jake {
+                position: absolute;
+                z-index: 1;
+                left: -6%;
+                bottom: -30px;
+                height: 138%;
+                width: auto;
+                pointer-events: none;
+                filter: drop-shadow(0 6px 10px #0009)
             }
 
             .game-loader {
@@ -774,7 +926,17 @@
                 }
 
                 .globe-stage {
-                    height: min(58vh,330px)
+                    height: min(56vh,400px);
+                    margin-top: -60px
+                }
+
+                .globe-controls {
+                    right: 18px;
+                    bottom: 14px
+                }
+
+                .modes {
+                    gap: 20px
                 }
 
                 @keyframes mobilepop {
@@ -797,9 +959,39 @@
                     transition-duration: .01ms!important
                 }
             }
+
+            @media(max-width: 760px) {
+                .globe-popover.is-open {
+                    transform:translate(-50%,-50%)
+                }
+            }
         </style>
     </head>
     <body>
+        <!-- SVG icon sprite -->
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+            <symbol id="i-pin" viewBox="0 0 24 24">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                <circle cx="12" cy="10" r="3"/>
+            </symbol>
+            <symbol id="i-rotate" viewBox="0 0 24 24">
+                <path d="M21 12a9 9 0 1 1-3-6.7L21 8"/>
+                <path d="M21 3v5h-5"/>
+            </symbol>
+            <symbol id="i-shuffle" viewBox="0 0 24 24">
+                <path d="M16 3h5v5"/>
+                <path d="M4 20 21 3"/>
+                <path d="M21 16v5h-5"/>
+                <path d="m15 15 6 6"/>
+                <path d="m4 4 5 5"/>
+            </symbol>
+            <symbol id="i-check" viewBox="0 0 24 24">
+                <path d="m5 12.5 4.5 4.5L19 7.5"/>
+            </symbol>
+            <symbol id="i-chevron-right" viewBox="0 0 24 24">
+                <path d="m9 6 6 6-6 6"/>
+            </symbol>
+        </svg>
         <div class="game-loader" id="game-loader" aria-hidden="true">
             <div class="game-loader-content">
                 <div class="game-loader-spinner"></div>
@@ -814,7 +1006,7 @@
                     <div class="greeting-line">
                         <span id="greeting">Good afternoon,</span>
                         <span class="greeting-name">
-                            <span id="gname">there</span>.
+                            <span id="gname">user</span>.
                         </span>
                     </div>
                 </div>
@@ -836,54 +1028,76 @@
                                     </svg>
                                     <span>Play</span>
                                 </button>
-                                <div style="position:relative">
-                                    <button class="ss-map-trigger fx" id="map-trigger" type="button" aria-expanded="false" aria-haspopup="dialog">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-                                            <circle cx="12" cy="12" r="10"/>
-                                            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>
+                                <button class="ss-map-trigger fx" id="map-trigger" type="button" aria-expanded="false" aria-haspopup="dialog">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>
+                                    </svg>
+                                    <span id="map-label">Poki</span>
+                                    <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="m7 14 5-5 5 5"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Popover lives directly in the card (outside the container-query element) -->
+                    <div class="globe-popover" id="globe-popover" role="dialog" aria-label="Choose a Subway Surfers location" hidden>
+                        <div class="globe-heading">
+                            <svg class="icon">
+                                <use href="#i-pin"/>
+                            </svg>
+                            <strong>Choose your destination</strong>
+                        </div>
+                        <div class="globe-stage" id="globe-stage">
+                            <canvas id="earth-canvas"></canvas>
+                            <div class="globe-hover-label" id="globe-hover-label">
+                                <svg class="icon">
+                                    <use href="#i-pin"/>
+                                </svg>
+                                <span id="hover-text"></span>
+                            </div>
+                            <div class="globe-place-card" id="globe-place-card">
+                                <img id="place-photo" alt="">
+                                <div class="globe-place-copy">
+                                    <strong>
+                                        <svg class="icon">
+                                            <use href="#i-pin"/>
                                         </svg>
-                                        <span id="map-label">Poki</span>
-                                        <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m7 14 5-5 5 5"/>
-                                        </svg>
-                                    </button>
-                                    <div class="globe-popover" id="globe-popover" role="dialog" aria-label="Choose a Subway Surfers location" hidden>
-                                        <div class="globe-heading">
-                                            <strong>Choose your destination</strong>
-                                            <span>SUBWAY SURFERS WORLD TOUR</span>
-                                        </div>
-                                        <div class="globe-stage" id="globe-stage">
-                                            <canvas id="earth-canvas"></canvas>
-                                            <div class="globe-tooltip" id="globe-tooltip"></div>
-                                            <div class="globe-hint">DRAG TO ROTATE · SCROLL TO ZOOM · SELECT A PIN</div>
-                                        </div>
-                                        <div class="globe-footer">
-                                            <div class="selected-location">
-                                                <span class="selected-dot"></span>
-                                                <div>
-                                                    <strong id="selected-city">Poki</strong>
-                                                    <small id="selected-caption">Play the standard version</small>
-                                                </div>
-                                            </div>
-                                            <div class="globe-actions">
-                                                <button class="globe-action" id="globe-reset" type="button">Reset view</button>
-                                                <button class="globe-action primary" id="globe-confirm" type="button">Select location</button>
-                                            </div>
-                                        </div>
-                                        <div class="globe-divider"></div>
-                                        <div class="poki-row">
-                                            <div class="poki-info">
-                                                <span class="poki-icon">P</span>
-                                                <div>
-                                                    <strong>Poki</strong>
-                                                    <small>Standard version · Not on the map</small>
-                                                </div>
-                                            </div>
-                                            <button class="poki-select" id="poki-select" type="button">Choose Poki</button>
-                                        </div>
-                                    </div>
+                                        <span id="place-name"></span>
+                                    </strong>
+                                    <p id="place-description"></p>
                                 </div>
                             </div>
+                            <div class="globe-controls" id="globe-controls">
+                                <button class="globe-control-btn" id="globe-auto-rotate" type="button" aria-pressed="false">
+                                    <svg class="icon">
+                                        <use href="#i-rotate"/>
+                                    </svg>
+                                    Auto rotate
+                                </button>
+                                <button class="globe-control-btn" id="globe-random" type="button">
+                                    <svg class="icon">
+                                        <use href="#i-shuffle"/>
+                                    </svg>
+                                    Random
+                                </button>
+                            </div>
+                        </div>
+                        <div class="globe-divider"></div>
+                        <div class="poki-row">
+                            <div class="poki-info">
+                                <span class="poki-icon" id="poki-icon"></span>
+                                <div>
+                                    <strong>Poki</strong>
+                                </div>
+                            </div>
+                            <button class="poki-select" id="poki-select" type="button">
+                                <svg class="icon">
+                                    <use href="#i-check"/>
+                                </svg>
+                                <span>Choose</span>
+                            </button>
                         </div>
                     </div>
                     <div style="position:absolute;inset:0;border:1px solid #ffffff0a;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 #ffffff12"></div>
@@ -897,11 +1111,14 @@
                         <span class="mode-bg">
                             <img class="mode-art-bg" src="https://s1.dmcdn.net/v/aPhRC1foMxlLzf-Bf/x1080" alt="">
                             <span class="mode-wash"></span>
-                            <span class="mode-crowd" id="crowd"></span>
                         </span>
+                        <span class="mode-crowd" id="crowd"></span>
                         <span class="mode-text">
                             <span class="mode-title">
-                                Multiplayer <span class="mode-arrow">›</span>
+                                Multiplayer 
+                                <svg class="icon mode-arrow">
+                                    <use href="#i-chevron-right"/>
+                                </svg>
                             </span>
                             <span class="mode-sub">Play with friends</span>
                         </span>
@@ -915,7 +1132,10 @@
                         <img class="mode-jake" src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
                         <span class="mode-text">
                             <span class="mode-title">
-                                Subway Suffers <span class="mode-arrow">›</span>
+                                Subway Suffers 
+                                <svg class="icon mode-arrow">
+                                    <use href="#i-chevron-right"/>
+                                </svg>
                             </span>
                         </span>
                     </button>
@@ -934,13 +1154,13 @@
                 const MULTIPLAYER_URL = "https://brunecoding.github.io/Subway-Surfers-Multiplayer/index.html?mp=1";
                 const STORE_KEY = "arborHubLastPlayed";
                 const CHAR_BASE = "https://5dd312fa-015f-11ea-ad56-9cb6d0d995f7.gdn.poki.com/ec5c789a-69d7-476d-aa4e-1a0064850d79/assets/character-previews/preview-";
-                const CROWD_POOL = ["boombot", "costa", "danunder", "dino", "frank", "princek", "tricky", "tagbot", "tasha", "rudyrascal", "spike", "lily", "king"];
-                const MAPS = [["Hong Kong", "193-hongkong", 22.3193, 114.1694], ["Singapore", "177-singapore", 1.3521, 103.8198], ["Tokyo", "184-tokyo", 35.6762, 139.6503], ["Seoul", "1103-seoul", 37.5665, 126.978], ["Bali", "1106-bali", -8.4095, 115.1889], ["Mumbai", "189-mumbai", 19.076, 72.8777], ["Marrakesh", "195-marrakesh", 31.6295, -7.9811], ["Cairo", "1116-cairo", 30.0444, 31.2357], ["Venice", "199-venice", 45.4408, 12.3155], ["Iceland", "1117-iceland", 64.1466, -21.9426], ["Havana", "190-havana", 23.1136, -82.3666], ["New York", "191-newyork", 40.7128, -74.006], ["Atlanta", "198-atlanta", 33.749, -84.388]];
+
+                // [name, theme, lat, lon, photo, description]
+                const MAPS = [["Hong Kong", "193-hongkong", 22.3193, 114.1694, "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=640&q=80", "A dazzling harbour city filled with towering skylines and neon-lit streets."], ["Singapore", "177-singapore", 1.3521, 103.8198, "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=640&q=80", "A futuristic garden city known for its striking waterfront skyline."], ["Tokyo", "184-tokyo", 35.6762, 139.6503, "https://images.unsplash.com/photo-1540959733332-eab4deeddb03?w=640&q=80", "A vibrant metropolis where bright city lights meet timeless tradition."], ["Seoul", "1103-seoul", 37.5665, 126.978, "https://images.unsplash.com/photo-1538485399081-7191377e8241?w=640&q=80", "A fast-moving capital packed with culture, music and futuristic streets."], ["Bali", "1106-bali", -8.4095, 115.1889, "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=640&q=80", "A tropical island of lush landscapes, temples and sunlit coastlines."], ["Mumbai", "189-mumbai", 19.076, 72.8777, "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=640&q=80", "India’s energetic coastal megacity, full of colour and motion."], ["Marrakesh", "195-marrakesh", 31.6295, -7.9811, "https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=640&q=80", "A historic Moroccan city of markets, warm colours and winding lanes."], ["Cairo", "1116-cairo", 30.0444, 31.2357, "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=640&q=80", "Explore Egypt’s bustling capital beside the legendary pyramids."], ["Venice", "199-venice", 45.4408, 12.3155, "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?w=640&q=80", "A remarkable city of canals, bridges and historic architecture."], ["Iceland", "1117-iceland", 64.1466, -21.9426, "https://images.unsplash.com/photo-1476610182048-b716b8518aae?w=640&q=80", "A dramatic landscape of glaciers, volcanoes and extraordinary scenery."], ["Havana", "190-havana", 23.1136, -82.3666, "https://images.unsplash.com/photo-1500759285222-a95626b934cb?w=640&q=80", "A colourful Caribbean capital with classic cars and vibrant streets."], ["New York", "191-newyork", 40.7128, -74.006, "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=640&q=80", "The iconic city skyline, busy avenues and unmistakable energy."], ["Atlanta", "198-atlanta", 33.749, -84.388, "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=640&q=80", "A lively Southern city surrounded by green spaces and modern towers."]];
                 const THEMES = Object.fromEntries(MAPS.map( ([name,theme]) => [name, theme]));
-                let selectedMap = "Poki";
-                let launching = false;
+
+                let selectedMap = "Poki", launching = false, loaderTimer;
                 const loader = $("#game-loader");
-                let loaderTimer;
                 function showLoader(title) {
                     clearTimeout(loaderTimer);
                     $("#loader-title").textContent = "Launching " + title;
@@ -954,30 +1174,42 @@
                     loader.setAttribute("aria-hidden", "true");
                     launching = false;
                 }
+                function readCount() {
+                    try {
+                        return Number(JSON.parse(localStorage.getItem(STORE_KEY) || "null")?.count) || 0;
+                    } catch {
+                        return 0;
+                    }
+                }
                 function countLaunch() {
                     try {
-                        const n = Number(JSON.parse(localStorage.getItem(STORE_KEY) || "null")?.count) || 0;
+                        const n = readCount() + 1;
                         localStorage.setItem(STORE_KEY, JSON.stringify({
-                            count: n + 1
+                            count: n
                         }));
-                        $("#launch-line").textContent = "Launches: " + (n + 1);
+                        $("#launch-line").textContent = "Launches: " + n;
                     } catch {}
                 }
-                try {
-                    $("#launch-line").textContent = "Launches: " + (Number(JSON.parse(localStorage.getItem(STORE_KEY) || "null")?.count) || 0);
-                } catch {}
+                $("#launch-line").textContent = "Launches: " + readCount();
+                // FIX: window.open(..., "noopener") always returns null, so the old code thought
+                // every launch was blocked. Open normally, then detach the opener manually.
                 function launchGame(url, title) {
                     if (launching)
                         return;
                     launching = true;
                     showLoader(title);
-                    const tab = window.open(url, "_blank", "noopener");
+                    const tab = window.open(url, "_blank");
                     if (!tab) {
                         hideLoader();
                         return;
                     }
+                    try {
+                        tab.opener = null;
+                    } catch {}
                     countLaunch();
                 }
+
+                // ---------- Greeting / username ----------
                 function readName() {
                     let name = window.ARBOR_HUB?.username || "";
                     if (!name && location.hash.length > 1) {
@@ -987,10 +1219,10 @@
                             name = location.hash.slice(1);
                         }
                     }
-                    return String(name).trim().split(/\s+/)[0] || "there";
+                    return String(name).trim().split(/\s+/)[0] || "user";
                 }
                 function setUser(name) {
-                    $("#gname").textContent = String(name || "").trim().split(/\s+/)[0] || "there";
+                    $("#gname").textContent = String(name || "").trim().split(/\s+/)[0] || "user";
                 }
                 setUser(readName());
                 const hour = new Date().getHours();
@@ -1006,221 +1238,471 @@
                 }
                 );
 
-                // Build the decorative crowd in the multiplayer card.
-                const pool = [...CROWD_POOL].sort( () => Math.random() - .5).slice(0, 8);
-                const names = [...pool.slice(0, 4), "jake", ...pool.slice(4)];
-                names.forEach( (name, i) => {
+                // ---------- Multiplayer card: fixed line-up, Jake in the middle and taller ----------
+                const LINEUP = ["frank", "dino", "tricky", "spike", "jake", "boombot", "tagbot", "tasha", "king"];
+                const HEIGHTS = [88, 90, 94, 100, 142, 102, 92, 96, 86];
+                LINEUP.forEach( (name, i) => {
                     const img = document.createElement("img");
                     img.className = "mode-char" + (name === "jake" ? " is-jake" : "");
                     img.alt = "";
                     img.src = CHAR_BASE + name + ".webp";
-                    img.style.left = (8 + i * (84 / (names.length - 1))) + "%";
-                    img.style.height = (name === "jake" ? 124 : 108 - Math.abs(i - 4) * 4) + "%";
+                    img.style.left = (38 + i * (58 / 8)) + "%";
+                    img.style.height = HEIGHTS[i] + "%";
                     img.style.zIndex = String(20 - Math.abs(i - 4) * 2);
+                    img.onerror = () => img.remove();
                     $("#crowd").appendChild(img);
                 }
                 );
 
-                // Three.js globe scene.
+                // ---------- Poki icon (real favicon, with fallbacks) ----------
+                (function() {
+                    const holder = $("#poki-icon");
+                    const sources = ["https://www.google.com/s2/favicons?domain=poki.com&sz=128", "https://icons.duckduckgo.com/ip3/poki.com.ico", "https://poki.com/favicon.ico"];
+                    let i = 0;
+                    const img = new Image();
+                    img.alt = "Poki";
+                    img.referrerPolicy = "no-referrer";
+                    const fallback = () => {
+                        holder.innerHTML = '<svg viewBox="0 0 32 32" aria-label="Poki"><rect width="32" height="32" fill="#0a8bff"/><path d="M9 25V7h8.2a6.2 6.2 0 0 1 0 12.4H14V25z" fill="#fff"/><circle cx="17" cy="13.2" r="2.1" fill="#0a8bff"/></svg>';
+                    }
+                    ;
+                    img.onerror = () => {
+                        i++;
+                        if (i < sources.length)
+                            img.src = sources[i];
+                        else
+                            fallback();
+                    }
+                    ;
+                    img.src = sources[0];
+                    holder.appendChild(img);
+                }
+                )();
+
+                // ---------- Low-poly globe ----------
+                // Hand-built continent outlines [lon, lat]. They are sampled per triangle,
+                // so the coarse mesh turns them into chunky, stylised land masses.
+                const LAND = {
+                    northAmerica: [[-168, 66], [-162, 70], [-156, 71.3], [-141, 69.7], [-128, 70], [-115, 68.5], [-108, 68], [-98, 68.5], [-95, 72], [-90, 69.5], [-85, 69.5], [-82, 67], [-87, 64], [-93, 61], [-94.5, 58.8], [-92.5, 57], [-88, 56.5], [-85, 55.2], [-82.3, 52.9], [-80.5, 51.4], [-79, 51.5], [-79.5, 54.5], [-77.5, 56.5], [-78, 58.5], [-78, 62], [-74, 62.3], [-70, 61], [-68, 58.5], [-65, 60.3], [-62, 57.5], [-60, 55], [-57, 52.5], [-56, 51.5], [-59, 50], [-66, 50], [-70, 47.5], [-65, 48.5], [-64.5, 46.2], [-61, 45.7], [-66, 44.3], [-70, 43.6], [-70.7, 42.3], [-74, 40.5], [-75.5, 38], [-76, 35], [-78.5, 33.8], [-81, 31.5], [-80, 27], [-80.2, 25.2], [-81.2, 25.3], [-82.8, 28.5], [-84, 30], [-86, 30.3], [-89, 30.2], [-90, 29], [-93.5, 29.7], [-97.2, 27.5], [-97.5, 24], [-97.8, 21], [-96, 19], [-94.5, 18.2], [-91.5, 18.5], [-90.5, 21], [-87, 21.5], [-87.5, 18.5], [-88.2, 16], [-84, 15.8], [-83.3, 13], [-83.7, 10.5], [-81.5, 9], [-79.5, 9.6], [-77.5, 8.8], [-77.3, 7.8], [-78.5, 7.2], [-80.5, 7.3], [-82.8, 8.2], [-85.7, 9.9], [-87.5, 13], [-91.5, 14], [-94.5, 16.2], [-97, 15.8], [-101, 17.3], [-105.5, 20], [-105.5, 22.5], [-109, 25.5], [-112.5, 29.5], [-114.7, 31.7], [-113, 29.5], [-110.5, 24.5], [-109.5, 23], [-112, 25], [-115, 28.5], [-117, 32.5], [-118.5, 34], [-121, 34.5], [-122.5, 37.5], [-124, 40.5], [-124.5, 43], [-124, 46.5], [-123, 48.3], [-125, 50], [-128, 51], [-131, 54.5], [-134, 57.5], [-138, 59.5], [-144, 60], [-148, 60.5], [-152, 59], [-156, 57], [-160, 55.5], [-163.5, 54.7], [-158, 58.7], [-162, 60], [-165, 62], [-165.5, 64.5]],
+                    southAmerica: [[-77.3, 8.5], [-75.5, 10.8], [-72, 12], [-71.5, 10.5], [-68, 10.6], [-64, 10.6], [-61, 10.5], [-59, 8.5], [-55, 6], [-52, 5], [-50, 1.8], [-50, -0.5], [-48, -1], [-44.5, -2.5], [-39, -3.2], [-35, -5.5], [-35, -9], [-37.5, -12], [-39, -15], [-39.2, -18], [-41, -22], [-44, -23], [-48, -25.5], [-48.8, -28.5], [-52, -32], [-54, -34.5], [-58, -34.8], [-57, -37.5], [-62, -39], [-65, -41], [-63.5, -42.8], [-65.5, -45], [-67.5, -46.5], [-66, -48], [-68.5, -50.5], [-69, -52.3], [-68.5, -54.2], [-71, -54.8], [-74, -52.3], [-75.5, -48.5], [-74, -43.5], [-73.5, -38], [-71.5, -32], [-71.5, -28], [-70.3, -23], [-70.2, -18.5], [-75, -15.5], [-77.5, -12], [-79.5, -8], [-81, -5], [-80, -2.5], [-80.5, -1], [-78.8, 1.5], [-77.5, 4.5], [-77.5, 7]],
+                    eurasia: [[-9, 37], [-9.5, 43], [-2, 43.5], [-1.5, 46], [-4.5, 48.5], [-1.5, 48.7], [2, 51], [5, 53.2], [8.5, 54], [8.5, 57], [10.5, 57.7], [10.5, 55], [12, 54.2], [14, 54], [19, 54.5], [21, 57], [24, 57.5], [24, 59.5], [29.5, 60], [22, 60.5], [21.5, 62.5], [25, 65.2], [22, 65.7], [17.5, 62], [18.5, 59.5], [16.5, 56.5], [13, 55.5], [11.5, 58.5], [8, 58], [5, 59], [5, 62], [10, 64], [14, 67], [18, 69.5], [25, 71], [31, 70], [40, 67.5], [41, 66], [34, 66.5], [36, 64], [40, 64.5], [44, 66.5], [44, 68.5], [54, 68.5], [60, 69], [68, 69], [67, 71.5], [73, 72.5], [80, 73.5], [87, 74.5], [100, 77], [105, 77.5], [113, 74], [128, 72.5], [140, 72.5], [150, 71.5], [160, 69.5], [170, 70], [180, 69], [180, 65], [177, 64.5], [172, 64.3], [179, 62.5], [170, 60], [163, 60], [162, 57.5], [156.5, 51], [156, 57], [160, 61], [154, 59.5], [143, 59.3], [135, 54.7], [141, 53.3], [140.5, 48.5], [135.5, 43.5], [131.5, 42.5], [129.5, 40.5], [129, 35.2], [126.5, 34.5], [126, 37.5], [125, 39.7], [121.5, 39], [121.5, 40.8], [118, 39], [119, 37.2], [122.5, 37], [120.5, 35.5], [121.5, 32], [122, 30], [120.5, 27], [117, 23.5], [114, 22.3], [110, 21], [108, 21.5], [106, 19.5], [108.5, 15.5], [109.2, 12], [106.5, 9.5], [105, 8.7], [104.5, 10.5], [100.5, 13.5], [99, 10.5], [100.5, 7], [103.5, 1.5], [101.5, 2.8], [98.5, 8], [98.5, 13.5], [97.8, 16.5], [94.5, 16], [94.2, 19], [92, 21.5], [90, 22], [87, 21.5], [86.5, 20], [84.5, 19], [81.5, 16], [80.2, 13.5], [79.8, 10.5], [78, 8.8], [77, 8.1], [75, 12], [73, 17.5], [72.8, 21], [70.5, 20.8], [68.5, 23.5], [66.5, 25.5], [61.5, 25], [57, 25.8], [56.5, 27], [53, 26.7], [50.5, 29.5], [48, 30], [48.5, 28], [51, 25], [51.5, 24.3], [54, 24.2], [56.4, 26.2], [56.4, 24.5], [58.8, 23.5], [59.8, 22.3], [58.5, 20.5], [55, 17], [52, 16], [48, 14], [43.5, 12.7], [42.8, 15.5], [39.5, 21.5], [37, 25.5], [35, 28.1], [34.9, 29.5], [34.5, 31.3], [35.2, 33.5], [36, 36], [34, 36.2], [30.5, 36.5], [28, 36.6], [26.5, 38.3], [26.5, 40], [29, 41], [31, 41.2], [35, 42], [38, 41], [41.5, 41.5], [41.5, 43], [37.5, 45], [38, 47], [35, 46.5], [33.5, 45.2], [32.5, 46.5], [30, 45.7], [28.7, 43.5], [28, 41.8], [26, 40.8], [24, 40.5], [23, 39.5], [24, 38], [22.5, 36.5], [21, 38.5], [19.5, 41], [16, 43.5], [13.7, 45.5], [12.3, 45.3], [12.5, 43.8], [14, 42], [16.5, 41], [18.5, 40.2], [17, 39], [16, 38], [15.8, 38.5], [16, 40], [15, 41], [12.5, 41.5], [10.5, 43], [9, 44.3], [7, 43.5], [3.5, 43.2], [3, 42], [0, 39], [-0.5, 37.7], [-2, 36.8], [-5.5, 36]],
+                    chukotka: [[-180, 68.5], [-169, 66.2], [-171, 64.5], [-175, 65.5], [-180, 65]],
+                    africa: [[-17, 21], [-16.5, 24], [-13, 27.7], [-10, 29.8], [-9.8, 31.5], [-6.5, 34], [-2, 35.2], [3, 36.8], [10, 37.3], [11, 36.5], [10.2, 34], [11.5, 33.2], [15.2, 32.3], [20, 32], [20, 30.5], [24, 32], [29, 30.8], [32, 31.2], [34.3, 31.3], [34.9, 29.5], [34.2, 27.8], [32.6, 29.9], [33.5, 27.2], [35.5, 24], [37.2, 21], [38.5, 18], [40, 15.5], [43, 12.7], [44.5, 10.4], [48, 11.2], [51.2, 11.8], [51, 10], [49, 6], [46, 2], [42, -1], [40.5, -3], [39, -5], [39.3, -8], [40.5, -10.5], [40.5, -15], [36.5, -18.5], [35, -21], [35.5, -24], [32.8, -26], [32.5, -28.5], [30, -31.5], [27, -33.5], [24, -34.2], [20, -34.8], [18.3, -34], [18, -31.5], [15, -27], [14.5, -22.5], [11.8, -17], [13.5, -12], [12.2, -6], [9.5, -1], [9.5, 3.5], [8, 4.5], [5.5, 4.3], [4, 6.3], [1, 6], [-2, 4.7], [-5, 5.2], [-8, 4.4], [-11.5, 6.8], [-13.2, 9], [-15, 11], [-16.8, 13.5], [-17.5, 15], [-16.5, 19]],
+                    madagascar: [[43.5, -24], [44.5, -20], [44, -17], [46, -15.7], [49.5, -12.2], [50.5, -15.5], [49.5, -19], [47.5, -24.8], [45, -25.5]],
+                    britain: [[-5.5, 50], [-3, 50.6], [1.4, 51.2], [1.7, 52.7], [0, 53.5], [-1.5, 55], [-2, 56], [-2, 57.6], [-4, 57.7], [-3, 58.6], [-5, 58.6], [-6, 56.5], [-5, 55], [-3, 54.5], [-3, 53.4], [-4.5, 53], [-5, 51.7], [-3, 51.4]],
+                    ireland: [[-10, 51.8], [-6, 52], [-6, 54], [-8, 55.2], [-10, 54.2], [-9.5, 53]],
+                    iceland: [[-24, 65.5], [-22, 66.4], [-16, 66.5], [-13.5, 65], [-18, 63.4], [-22, 63.8]],
+                    greenland: [[-73, 78], [-60, 82], [-30, 83.5], [-18, 81], [-20, 75], [-22, 70.5], [-30, 68], [-40, 65], [-43, 60], [-48, 61], [-53, 66], [-55, 70.5], [-60, 75.5]],
+                    baffin: [[-80, 73.5], [-70, 72.5], [-62, 67], [-64, 63], [-69, 63], [-73, 64.7], [-78, 64.2], [-74, 67.5], [-84, 70], [-90, 73]],
+                    ellesmere: [[-90, 77], [-70, 82.5], [-62, 82], [-76, 78.5]],
+                    victoria: [[-118, 71], [-105, 73], [-101, 70], [-110, 68.5]],
+                    newfoundland: [[-59, 47.7], [-56, 51.5], [-53, 47], [-55, 46.8]],
+                    cuba: [[-85, 22], [-82, 23.2], [-77, 21.8], [-74.2, 20.2], [-77.5, 19.8], [-80, 21.8], [-82.5, 22.3]],
+                    hispaniola: [[-74.5, 18.4], [-72, 19.8], [-69, 19.2], [-68.4, 18.3], [-71, 17.8]],
+                    honshu: [[130.5, 31], [132, 33.5], [135, 33.5], [137, 34.5], [140, 35], [141, 38], [142, 40], [141, 41.5], [140, 40], [139.5, 38], [137, 37], [136, 36], [133, 35.5], [131, 34.5], [130.5, 33.5]],
+                    hokkaido: [[140, 42], [141.5, 45.5], [145.5, 43.5], [143.5, 42], [142, 42.3]],
+                    sakhalin: [[142, 46], [143.5, 49], [143, 54], [142, 53], [142, 50]],
+                    taiwan: [[120.1, 23], [121.5, 25.2], [122, 24.5], [120.8, 22]],
+                    luzon: [[120, 18.5], [122.3, 18.3], [122, 14], [124, 13], [121, 13.5], [120, 15]],
+                    mindanao: [[122, 7], [126.5, 7.5], [126, 6], [124, 6.2]],
+                    sumatra: [[95.3, 5.5], [98, 4], [104, -1], [106, -3], [105.8, -5.8], [101, -3], [97, 2]],
+                    java: [[105.2, -6.8], [108, -6.5], [114.5, -7.7], [114.5, -8.7], [106, -7.5]],
+                    borneo: [[109, 1.5], [110, 1.7], [111, 3], [113, 3.8], [117, 7], [119, 5], [117.5, 1], [116.5, -3.5], [114, -4], [111, -3], [110, -1.5], [109, 0]],
+                    sulawesi: [[119.5, -5], [120.5, -2.8], [119.8, 0.5], [121, 1.2], [125, 1.5], [123, -1], [122.5, -4.5], [121, -3.5]],
+                    newGuinea: [[131, -0.8], [135, -3.3], [138, -8.3], [141, -9.1], [143.5, -9], [147.5, -10], [150, -10.5], [147, -6], [145, -4.5], [141, -2.6], [135, -2.2], [132, -0.5]],
+                    australia: [[114, -22], [113.5, -26], [115, -30], [115, -34.3], [118, -35], [123.5, -33.8], [126, -32.3], [131, -31.5], [134, -32.7], [137.5, -33], [137.8, -35], [140, -38], [144, -38.5], [146.3, -39], [150, -37.5], [151.5, -33], [153, -28], [153.5, -25.5], [150, -22.5], [146.5, -19], [145.4, -15], [143.5, -14], [142.5, -10.8], [141.5, -13], [141, -17], [139, -17.5], [135.5, -15], [137, -12.2], [133, -11.5], [131, -12.3], [130, -13.5], [127, -14], [125, -15], [122.2, -17.5], [121, -19.5], [117, -20.7]],
+                    tasmania: [[145, -41], [148.2, -41], [147.5, -43.5], [146, -43.3]],
+                    nzNorth: [[172.7, -34.5], [175, -37], [178, -37.7], [176.5, -40], [175, -41.5], [174.5, -39.5], [173.8, -39.2], [174.8, -37]],
+                    nzSouth: [[172.7, -40.7], [174, -41.5], [171, -44.5], [169, -46.6], [166.5, -46], [168.5, -44], [171.5, -42]],
+                    sriLanka: [[79.8, 9.5], [81.7, 7.5], [81, 6], [80, 6.2], [79.8, 8]],
+                    novayaZemlya: [[52, 71], [57, 70.5], [68, 76.7], [60, 76.5]]
+                };
+                const WATER = [// inland seas cut out of the land
+                [[47, 45], [50, 46.5], [53, 45.5], [51, 43], [53, 41], [54, 37.5], [50, 37], [49, 40], [47.5, 43]]];
+                const ICE_KEYS = new Set(["greenland", "ellesmere"]);
+                function inPoly(x, y, p) {
+                    let c = false;
+                    for (let i = 0, j = p.length - 1; i < p.length; j = i++) {
+                        const xi = p[i][0]
+                          , yi = p[i][1]
+                          , xj = p[j][0]
+                          , yj = p[j][1];
+                        if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi)
+                            c = !c;
+                    }
+                    return c;
+                }
+                function landAt(lat, lon) {
+                    if (lat < -68)
+                        return "ice";
+                    for (const w of WATER)
+                        if (inPoly(lon, lat, w))
+                            return null;
+                    for (const k in LAND)
+                        if (inPoly(lon, lat, LAND[k]))
+                            return ICE_KEYS.has(k) ? "ice" : k;
+                    return null;
+                }
+                const box = (lat, lon, a, b, c, d) => lat >= a && lat <= b && lon >= c && lon <= d;
+                function isDesert(lat, lon) {
+                    return box(lat, lon, 15, 31, -14, 34) || box(lat, lon, 16, 30, 36, 57) || box(lat, lon, 38, 46, 92, 112) || box(lat, lon, -31, -18, 120, 140) || box(lat, lon, -29, -19, 13, 24) || box(lat, lon, 31, 37, -116, -105) || box(lat, lon, 25, 38, 52, 64);
+                }
+
                 const stage = $("#globe-stage")
                   , canvas = $("#earth-canvas")
-                  , tooltip = $("#globe-tooltip");
-                let scene, camera, renderer, earthGroup, earthMesh, pinMeshes = [], raycaster, mouse;
+                  , hoverLabel = $("#globe-hover-label")
+                  , placeCard = $("#globe-place-card");
+                let scene, camera, renderer, earthMesh, earthGroup, stars, raycaster, mouse, pinHits = [], pinGroups = [];
                 let globeReady = false
-                  , raf = 0
                   , dragging = false
                   , downX = 0
                   , downY = 0
                   , prevX = 0
                   , prevY = 0
-                  , moved = false;
+                  , moved = false
+                  , autoRotate = false
+                  , hoveredPin = null
+                  , selectedPin = null
+                  , rafId = 0;
+                const GLOBE_STYLE = {
+                    starOpacity: .65,
+                    starSize: .024,
+                    starCount: 750,
+                    autoRotateSpeed: .0035,
+                    detail: 7,
+                    baseDistance: 3.55
+                };
+                const autoRotateButton = $("#globe-auto-rotate");
                 const targetRotation = {
-                    x: 0,
-                    y: 0
+                    x: -.12,
+                    y: -.55
                 }
                   , currentRotation = {
-                    x: 0,
-                    y: 0
+                    x: -.12,
+                    y: -.55
                 };
-                const textureLoader = new THREE.TextureLoader();
-                const pinMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xd7df1f
-                });
-                const pinGeometry = new THREE.SphereGeometry(.024,12,10);
-                function latLonToVector(lat, lon, r=1.025) {
+
+                function latLonToVector(lat, lon, r=1) {
                     const phi = (90 - lat) * Math.PI / 180
                       , theta = (lon + 180) * Math.PI / 180;
                     return new THREE.Vector3(-r * Math.sin(phi) * Math.cos(theta),r * Math.cos(phi),r * Math.sin(phi) * Math.sin(theta));
                 }
+                function vectorToLatLon(v) {
+                    const lat = Math.asin(Math.max(-1, Math.min(1, v.y))) * 180 / Math.PI;
+                    let lon = Math.atan2(v.z, -v.x) * 180 / Math.PI - 180;
+                    if (lon < -180)
+                        lon += 360;
+                    return [lat, lon];
+                }
+                const rand = n => {
+                    const s = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+                    return s - Math.floor(s);
+                }
+                ;
+
+                function buildLowPolyEarth() {
+                    const geo = new THREE.IcosahedronGeometry(1,GLOBE_STYLE.detail);
+                    // non-indexed, ~1,280 chunky triangles
+                    const pos = geo.attributes.position
+                      , colors = new Float32Array(pos.count * 3)
+                      , c = new THREE.Color()
+                      , cen = new THREE.Vector3()
+                      , tmp = new THREE.Vector3();
+                    for (let t = 0; t < pos.count / 3; t++) {
+                        cen.set(0, 0, 0);
+                        for (let k = 0; k < 3; k++) {
+                            tmp.fromBufferAttribute(pos, t * 3 + k);
+                            cen.add(tmp);
+                        }
+                        cen.normalize();
+                        const [lat,lon] = vectorToLatLon(cen)
+                          , kind = landAt(lat, lon)
+                          , r = rand(t)
+                          , r2 = rand(t + 9999);
+                        if (!kind) {
+                            // ocean: a few stepped blues
+                            c.setHSL(.555 + r2 * .012, .58, .27 + r * .075);
+                        } else if (kind === "ice" || Math.abs(lat) > 74) {
+                            c.setHSL(.55, .25, .86 + r * .09);
+                        } else if (isDesert(lat, lon)) {
+                            c.setHSL(.115 + r2 * .02, .5, .55 + r * .09);
+                        } else if (Math.abs(lat) > 58) {
+                            c.setHSL(.26 + r2 * .03, .22, .5 + r * .09);
+                        } else if (Math.abs(lat) < 12) {
+                            c.setHSL(.34 + r2 * .03, .46, .3 + r * .08);
+                        } else {
+                            c.setHSL(.25 + r2 * .07, .42, .36 + r * .1);
+                        }
+                        for (let k = 0; k < 3; k++) {
+                            colors[(t * 3 + k) * 3] = c.r;
+                            colors[(t * 3 + k) * 3 + 1] = c.g;
+                            colors[(t * 3 + k) * 3 + 2] = c.b;
+                        }
+                    }
+                    geo.setAttribute("color", new THREE.BufferAttribute(colors,3));
+                    return new THREE.Mesh(geo,new THREE.MeshLambertMaterial({
+                        vertexColors: true,
+                        flatShading: true
+                    }));
+                }
+
                 function makePin(map, index) {
-                    const [name,theme,lat,lon] = map;
-                    const group = new THREE.Group();
-                    const pos = latLonToVector(lat, lon, 1.012);
+                    const [name,theme,lat,lon] = map
+                      , group = new THREE.Group()
+                      , pos = latLonToVector(lat, lon, 1.0);
                     group.position.copy(pos);
                     group.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0), pos.clone().normalize());
-                    const stem = new THREE.Mesh(new THREE.CylinderGeometry(.004,.004,.045,6),new THREE.MeshBasicMaterial({
+                    const hit = new THREE.Mesh(new THREE.SphereGeometry(.09,10,8),new THREE.MeshBasicMaterial({
+                        transparent: true,
+                        opacity: 0,
+                        depthWrite: false
+                    }));
+                    hit.position.y = .04;
+                    hit.userData.pinIndex = index;
+                    group.add(hit);
+                    const stem = new THREE.Mesh(new THREE.CylinderGeometry(.005,.005,.05,6),new THREE.MeshBasicMaterial({
                         color: 0xd7df1f
                     }));
                     stem.position.y = .025;
                     group.add(stem);
-                    const dot = new THREE.Mesh(pinGeometry,pinMaterial.clone());
-                    dot.position.y = .052;
+                    const dot = new THREE.Mesh(new THREE.SphereGeometry(.022,8,6),new THREE.MeshBasicMaterial({
+                        color: 0xe8ef70
+                    }));
+                    dot.position.y = .056;
                     group.add(dot);
-                    const halo = new THREE.Mesh(new THREE.RingGeometry(.028,.038,24),new THREE.MeshBasicMaterial({
+                    const halo = new THREE.Mesh(new THREE.RingGeometry(.03,.042,16),new THREE.MeshBasicMaterial({
                         color: 0xd7df1f,
                         transparent: true,
-                        opacity: .65,
+                        opacity: .6,
                         side: THREE.DoubleSide
                     }));
                     halo.rotation.x = -Math.PI / 2;
-                    halo.position.y = .008;
+                    halo.position.y = .004;
                     group.add(halo);
                     group.userData = {
                         name,
                         theme,
-                        index
+                        index,
+                        dot
                     };
                     earthGroup.add(group);
-                    pinMeshes.push(dot);
-                    return group;
+                    pinHits.push(hit);
+                    pinGroups.push(group);
                 }
+
                 function initGlobe() {
                     if (globeReady)
                         return;
                     globeReady = true;
                     scene = new THREE.Scene();
                     camera = new THREE.PerspectiveCamera(34,1,.1,100);
-                    camera.position.set(0, 0, 4.25);
+                    camera.position.set(0, 0, GLOBE_STYLE.baseDistance);
                     renderer = new THREE.WebGLRenderer({
                         canvas,
                         antialias: true,
                         alpha: true
                     });
                     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+                    renderer.setClearColor(0x000000, 0);
                     renderer.outputColorSpace = THREE.SRGBColorSpace;
-                    scene.add(new THREE.AmbientLight(0xffffff,1.45));
-                    const key = new THREE.DirectionalLight(0xffffff,2.0);
-                    key.position.set(4, 2, 5);
+                    scene.add(new THREE.AmbientLight(0xffffff,1.05));
+                    const key = new THREE.DirectionalLight(0xffffff,1.9);
+                    key.position.set(4, 3, 5);
                     scene.add(key);
+                    const rim = new THREE.DirectionalLight(0x9fd8ff,.55);
+                    rim.position.set(-5, -1, -3);
+                    scene.add(rim);
                     earthGroup = new THREE.Group();
                     scene.add(earthGroup);
-                    const geometry = new THREE.SphereGeometry(1,48,36);
-                    const material = new THREE.MeshStandardMaterial({
-                        color: 0x9eb8a2,
-                        roughness: 1,
-                        metalness: 0
-                    });
-                    earthMesh = new THREE.Mesh(geometry,material);
+                    earthMesh = buildLowPolyEarth();
                     earthGroup.add(earthMesh);
-                    textureLoader.load("https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg", texture => {
-                        texture.colorSpace = THREE.SRGBColorSpace;
-                        material.map = texture;
-                        material.color.set(0xffffff);
-                        material.needsUpdate = true;
-                    }
-                    , undefined, () => {
-                        material.color.set(0x426b62);
-                    }
-                    );
-                    // Fine triangular overlay gives the planet a subtle low-poly finish.
-                    const wire = new THREE.Mesh(new THREE.IcosahedronGeometry(1.003,3),new THREE.MeshBasicMaterial({
-                        color: 0xc7dfc8,
-                        wireframe: true,
+                    earthGroup.add(new THREE.Mesh(new THREE.SphereGeometry(1.045,48,32),new THREE.MeshBasicMaterial({
+                        color: 0x7fd0ff,
                         transparent: true,
-                        opacity: .075
-                    }));
-                    earthGroup.add(wire);
-                    const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.045,48,36),new THREE.MeshBasicMaterial({
-                        color: 0x76b8a1,
-                        transparent: true,
-                        opacity: .075,
-                        side: THREE.BackSide
-                    }));
-                    earthGroup.add(atmosphere);
-                    MAPS.forEach(makePin);
-                    const starsGeo = new THREE.BufferGeometry()
-                      , starPositions = [];
-                    for (let i = 0; i < 450; i++) {
-                        const v = new THREE.Vector3().randomDirection().multiplyScalar(2.4 + Math.random() * 2);
-                        starPositions.push(v.x, v.y, v.z);
-                    }
-                    starsGeo.setAttribute("position", new THREE.Float32BufferAttribute(starPositions,3));
-                    scene.add(new THREE.Points(starsGeo,new THREE.PointsMaterial({
-                        color: 0xc5d8b8,
-                        size: .012,
-                        transparent: true,
-                        opacity: .5
+                        opacity: .05,
+                        side: THREE.BackSide,
+                        depthWrite: false
                     })));
+                    MAPS.forEach(makePin);
+                    // Stars: bigger and brighter than before
+                    const sg = new THREE.BufferGeometry()
+                      , sp = [];
+                    for (let i = 0; i < GLOBE_STYLE.starCount; i++) {
+                        const v = new THREE.Vector3().randomDirection().multiplyScalar(2.3 + Math.random() * 2.6);
+                        sp.push(v.x, v.y, v.z);
+                    }
+                    sg.setAttribute("position", new THREE.Float32BufferAttribute(sp,3));
+                    stars = new THREE.Points(sg,new THREE.PointsMaterial({
+                        color: 0xeef6dc,
+                        size: GLOBE_STYLE.starSize,
+                        transparent: true,
+                        opacity: GLOBE_STYLE.starOpacity,
+                        depthWrite: false
+                    }));
+                    scene.add(stars);
                     raycaster = new THREE.Raycaster();
                     mouse = new THREE.Vector2();
+                    autoRotate = true;
+                    autoRotateButton.classList.add("active");
+                    autoRotateButton.setAttribute("aria-pressed", "true");
+                    new ResizeObserver(resizeGlobe).observe(stage);
                     resizeGlobe();
-                    window.addEventListener("resize", resizeGlobe);
-                    animate();
                 }
                 function resizeGlobe() {
                     if (!renderer || !camera)
                         return;
                     const w = stage.clientWidth
                       , h = stage.clientHeight;
+                    if (!w || !h)
+                        return;
                     renderer.setSize(w, h, false);
                     camera.aspect = w / h;
                     camera.updateProjectionMatrix();
+                    // keep the whole globe visible on narrow (mobile) stages
+                    const fit = 1.14 / (Math.tan(camera.fov * Math.PI / 360) * camera.aspect);
+                    camera.position.z = Math.max(GLOBE_STYLE.baseDistance, fit);
                 }
-                function animate() {
-                    raf = requestAnimationFrame(animate);
-                    if (!dragging) {
-                        targetRotation.y += .0008;
+                function updatePinOverlay() {
+                    if (!earthGroup || !camera)
+                        return;
+                    const rect = stage.getBoundingClientRect();
+                    const project = (group, el, offsetY) => {
+                        if (!group || !el)
+                            return;
+                        const world = new THREE.Vector3();
+                        group.userData.dot.getWorldPosition(world);
+                        const facing = world.clone().normalize().dot(camera.position.clone().normalize()) > .12;
+                        if (!facing) {
+                            el.style.visibility = "hidden";
+                            return;
+                        }
+                        const p = world.clone().project(camera);
+                        el.style.left = ((p.x * .5 + .5) * rect.width) + "px";
+                        el.style.top = ((-p.y * .5 + .5) * rect.height + offsetY) + "px";
+                        el.style.visibility = "";
                     }
-                    currentRotation.x += (targetRotation.x - currentRotation.x) * .08;
-                    currentRotation.y += (targetRotation.y - currentRotation.y) * .08;
+                    ;
+                    project(hoveredPin, hoverLabel, -9);
+                    project(selectedPin, placeCard, -13);
+                }
+                function loop(t) {
+                    rafId = requestAnimationFrame(loop);
+                    if (autoRotate && !dragging)
+                        targetRotation.y += GLOBE_STYLE.autoRotateSpeed;
+                    currentRotation.x += (targetRotation.x - currentRotation.x) * .12;
+                    currentRotation.y += (targetRotation.y - currentRotation.y) * .12;
                     earthGroup.rotation.x = currentRotation.x;
                     earthGroup.rotation.y = currentRotation.y;
+                    stars.rotation.y = t * .00001;
+                    stars.material.opacity = GLOBE_STYLE.starOpacity + .12 * Math.sin(t * .0014);
                     renderer.render(scene, camera);
+                    updatePinOverlay();
+                }
+                const startLoop = () => {
+                    if (!rafId && globeReady)
+                        rafId = requestAnimationFrame(loop);
+                }
+                ;
+                const stopLoop = () => {
+                    cancelAnimationFrame(rafId);
+                    rafId = 0;
+                }
+                ;
+
+                function setAutoRotate(on) {
+                    autoRotate = on;
+                    autoRotateButton.classList.toggle("active", on);
+                    autoRotateButton.setAttribute("aria-pressed", String(on));
                 }
                 function selectMap(name) {
                     selectedMap = name;
                     $("#map-label").textContent = name;
-                    $("#selected-city").textContent = name;
-                    $("#selected-caption").textContent = name === "Poki" ? "Play the standard version" : "World Tour destination";
-                    $("#poki-select").classList.toggle("active", name === "Poki");
-                    $("#poki-select").textContent = name === "Poki" ? "Selected" : "Choose Poki";
-                    $("#globe-confirm").textContent = name === "Poki" ? "Selected" : "Select location";
-                    if (earthGroup) {
-                        earthGroup.traverse(o => {
-                            if (o.isMesh && o.geometry === pinGeometry && o.material?.color) {
-                                const active = o.parent?.userData?.name === name;
-                                o.scale.setScalar(active ? 1.55 : 1);
-                                o.material.color.set(active ? 0xffffff : 0xd7df1f);
-                            }
-                        }
-                        );
+                    const pokiBtn = $("#poki-select");
+                    pokiBtn.classList.toggle("active", name === "Poki");
+                    pokiBtn.querySelector("span").textContent = name === "Poki" ? "Selected" : "Choose";
+                    pinGroups.forEach(g => {
+                        const active = g.userData.name === name
+                          , dot = g.userData.dot;
+                        dot.scale.setScalar(active ? 1.7 : 1);
+                        dot.material.color.set(active ? 0xffffff : 0xe8ef70);
+                    }
+                    );
+                }
+                // Spin/tilt the globe so a location faces the camera
+                function focusOn(lat, lon) {
+                    const th = (lon + 180) * Math.PI / 180;
+                    let ay = -Math.atan2(-Math.cos(th), Math.sin(th));
+                    ay += Math.PI * 2 * Math.round((currentRotation.y - ay) / (Math.PI * 2));
+                    targetRotation.y = ay;
+                    targetRotation.x = Math.max(-1, Math.min(1, lat * Math.PI / 180 * .55));
+                }
+                function showPlace(map, {focus=true}={}) {
+                    const [name,theme,lat,lon,photo,description] = map;
+                    selectMap(name);
+                    selectedPin = pinGroups.find(g => g.userData.name === name) || null;
+                    const img = $("#place-photo");
+                    img.style.display = "";
+                    img.onerror = () => {
+                        img.style.display = "none";
+                    }
+                    ;
+                    img.src = photo || "";
+                    img.alt = name;
+                    $("#place-name").textContent = name;
+                    $("#place-description").textContent = description;
+                    placeCard.classList.add("show");
+                    hoveredPin = null;
+                    hoverLabel.classList.remove("show");
+                    if (focus) {
+                        setAutoRotate(false);
+                        focusOn(lat, lon);
                     }
                 }
+                function randomMap() {
+                    let map;
+                    do {
+                        map = MAPS[Math.floor(Math.random() * MAPS.length)];
+                    } while (map[0] === selectedMap && MAPS.length > 1);
+                    showPlace(map);
+                }
+
                 function openPicker(open) {
                     const pop = $("#globe-popover");
-                    pop.hidden = !open;
-                    $("#map-trigger").setAttribute("aria-expanded", String(open));
                     if (open) {
-                        initGlobe();
-                        requestAnimationFrame(resizeGlobe);
+                        pop.hidden = false;
+                        requestAnimationFrame( () => {
+                            pop.classList.add("is-open");
+                            initGlobe();
+                            resizeGlobe();
+                            startLoop();
+                        }
+                        );
+                    } else {
+                        pop.classList.remove("is-open");
+                        setTimeout( () => {
+                            if (!pop.classList.contains("is-open")) {
+                                pop.hidden = true;
+                                stopLoop();
+                            }
+                        }
+                        , 300);
                     }
+                    $("#map-trigger").setAttribute("aria-expanded", String(open));
                 }
                 $("#map-trigger").addEventListener("click", e => {
                     e.stopPropagation();
                     openPicker($("#globe-popover").hidden);
                 }
                 );
-                $("#poki-select").addEventListener("click", () => selectMap("Poki"));
-                $("#globe-confirm").addEventListener("click", () => {
+                $("#poki-select").addEventListener("click", () => {
+                    selectMap("Poki");
+                    selectedPin = null;
+                    placeCard.classList.remove("show");
                     openPicker(false);
                 }
                 );
-                $("#globe-reset").addEventListener("click", () => {
-                    targetRotation.x = 0;
-                    targetRotation.y = 0;
-                    camera.position.set(0, 0, 4.25);
-                }
-                );
+                autoRotateButton.addEventListener("click", () => setAutoRotate(!autoRotate));
+                $("#globe-random").addEventListener("click", randomMap);
                 document.addEventListener("pointerdown", e => {
                     if (!$("#globe-popover").contains(e.target) && !$("#map-trigger").contains(e.target))
                         openPicker(false);
@@ -1231,25 +1713,40 @@
                         openPicker(false);
                 }
                 );
-                function pickAt(event) {
+
+                function pickAt(event, click=false) {
                     const rect = canvas.getBoundingClientRect();
                     mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
                     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
                     raycaster.setFromCamera(mouse, camera);
-                    const hits = raycaster.intersectObjects(pinMeshes, false);
-                    if (hits.length) {
-                        const pin = hits[0].object
-                          , parent = pin.parent;
-                        if (parent?.userData?.name) {
-                            selectMap(parent.userData.name);
-                            tooltip.textContent = parent.userData.name;
-                            tooltip.classList.add("show");
-                            return true;
+                    // include the globe itself so pins on the far side can't be hit through it
+                    const hits = raycaster.intersectObjects([earthMesh, ...pinHits], false);
+                    const first = hits[0];
+                    if (first && first.object.userData.pinIndex !== undefined) {
+                        const group = first.object.parent
+                          , map = MAPS[group.userData.index];
+                        if (click)
+                            showPlace(map);
+                        else {
+                            hoveredPin = group;
+                            $("#hover-text").textContent = map[0];
+                            hoverLabel.classList.add("show");
+                            stage.style.cursor = "pointer";
                         }
+                        return true;
+                    }
+                    if (!click) {
+                        hoveredPin = null;
+                        hoverLabel.classList.remove("show");
+                        stage.style.cursor = "";
                     }
                     return false;
                 }
+                // FIX: pointer capture on the stage was swallowing clicks on the Auto rotate / Random buttons
+                const inControls = e => !!e.target.closest(".globe-controls");
                 stage.addEventListener("pointerdown", e => {
+                    if (inControls(e))
+                        return;
                     dragging = true;
                     moved = false;
                     downX = prevX = e.clientX;
@@ -1258,36 +1755,50 @@
                 }
                 );
                 stage.addEventListener("pointermove", e => {
+                    if (inControls(e))
+                        return;
                     if (dragging) {
                         const dx = e.clientX - prevX
                           , dy = e.clientY - prevY;
                         if (Math.abs(e.clientX - downX) + Math.abs(e.clientY - downY) > 4)
                             moved = true;
                         targetRotation.y += dx * .006;
-                        targetRotation.x = Math.max(-1.25, Math.min(1.25, targetRotation.x + dy * .006));
+                        targetRotation.x = Math.max(-1.35, Math.min(1.35, targetRotation.x + dy * .006));
                         prevX = e.clientX;
                         prevY = e.clientY;
-                    } else {
-                        const hit = pickAt(e);
-                        if (!hit)
-                            tooltip.classList.remove("show");
-                    }
+                    } else if (globeReady)
+                        pickAt(e, false);
                 }
                 );
                 stage.addEventListener("pointerup", e => {
+                    if (!dragging)
+                        return;
                     dragging = false;
-                    if (!moved)
-                        pickAt(e);
+                    if (!moved && globeReady)
+                        pickAt(e, true);
                 }
                 );
-                stage.addEventListener("pointercancel", () => dragging = false);
+                stage.addEventListener("pointercancel", () => {
+                    dragging = false;
+                }
+                );
+                stage.addEventListener("pointerleave", () => {
+                    if (!dragging) {
+                        hoveredPin = null;
+                        hoverLabel.classList.remove("show");
+                    }
+                }
+                );
                 stage.addEventListener("wheel", e => {
+                    if (!camera)
+                        return;
                     e.preventDefault();
-                    camera.position.z = Math.max(2.8, Math.min(6, camera.position.z + e.deltaY * .002));
+                    camera.position.z = Math.max(2.6, Math.min(6, camera.position.z + e.deltaY * .002));
                 }
                 , {
                     passive: false
                 });
+
                 $("#play").addEventListener("click", () => {
                     const theme = THEMES[selectedMap];
                     launchGame(theme ? THEME_BASE + theme : POKI_URL, "Subway Surfers");
