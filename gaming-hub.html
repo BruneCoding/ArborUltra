@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
 <title>Arbor Gaming Hub</title>
+
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html,body{background:#0a0a0a}
@@ -19,7 +21,6 @@ p{margin:0}
 .col{display:flex;flex-direction:column;gap:16px;min-width:0}
 .col-left{padding-bottom:44px}
 .spacer{flex:none;height:var(--greet-h)}
-
 .greeting{flex:none;display:flex;align-items:flex-end;height:var(--greet-h);padding:0 4px}
 .greeting-line{display:inline-flex;align-items:baseline;gap:8px;font-size:25px;font-weight:650;letter-spacing:-.8px;line-height:1.2;white-space:nowrap}
 .greeting-morph{display:inline-grid;position:relative;filter:url(#morph-threshold)}
@@ -102,537 +103,1041 @@ p{margin:0}
 .mode-horror{--jake-h:138%;--jake-x:-6%;--jake-y:-30px;--text-l:36%;--text-r:auto;--text-z:0;--text-y:14px}
 .mode-multi{--text-l:7%;--text-r:36%}
 
+/* GAME LOADING SCREEN */
+
+.game-loader{
+    position:fixed;
+    inset:0;
+    z-index:999999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(5,6,3,.76);
+    backdrop-filter:blur(20px) saturate(135%);
+    -webkit-backdrop-filter:blur(20px) saturate(135%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity .3s ease,visibility .3s ease;
+}
+
+.game-loader.active{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.game-loader-content{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    transform:translateY(9px) scale(.97);
+    transition:transform .35s cubic-bezier(.2,.8,.2,1);
+}
+
+.game-loader.active .game-loader-content{
+    transform:translateY(0) scale(1);
+}
+
+.game-loader-spinner{
+    width:38px;
+    height:38px;
+    border:2px solid rgba(215,223,31,.12);
+    border-top-color:#d7df1f;
+    border-right-color:rgba(215,223,31,.55);
+    border-radius:50%;
+    animation:arbor-spin .8s linear infinite;
+    filter:drop-shadow(0 0 9px rgba(215,223,31,.3));
+}
+
+@keyframes arbor-spin{
+    to{transform:rotate(360deg)}
+}
+
+.game-loader-title{
+    font-size:15px;
+    font-weight:650;
+    letter-spacing:-.3px;
+    color:#fff;
+}
+
+.game-loader-subtitle{
+    margin-top:-11px;
+    font-size:11px;
+    color:rgba(255,255,255,.42);
+    letter-spacing:.2px;
+}
+
+.game-loader-bar{
+    width:110px;
+    height:2px;
+    overflow:hidden;
+    border-radius:10px;
+    background:rgba(255,255,255,.09);
+}
+
+.game-loader-bar::after{
+    content:"";
+    display:block;
+    width:40%;
+    height:100%;
+    border-radius:inherit;
+    background:#d7df1f;
+    box-shadow:0 0 10px rgba(215,223,31,.6);
+    animation:arbor-loading 1s ease-in-out infinite;
+}
+
+@keyframes arbor-loading{
+    0%{transform:translateX(-110%)}
+    100%{transform:translateX(280%)}
+}
+
+.game-loader-glow{
+    position:absolute;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background:rgba(215,223,31,.045);
+    filter:blur(65px);
+    pointer-events:none;
+}
+
 @media(max-width:1100px){
-  .hub{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
-  .col-side{display:none}
+    .hub{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+    .col-side{display:none}
 }
+
 @media(max-width:760px){
-  .hub{grid-template-columns:minmax(0,1fr);gap:8px;padding-top:12px}
-  .col-middle .spacer{display:none}
-  .greeting-line{font-size:21px}
-  .ss-card{border-radius:25px}
-  .ss-content{padding:6% 0 6% 5%}
-  .ss-copy{width:61%}
-  .ss-logo{width:85%}
-  .ss-description{width:92%}
-  .ss-play{min-width:0;padding:10px 17px 10px 12px;gap:7px}
-  .ss-map-trigger{gap:6px;padding:10px 11px}
-  .ss-actions{gap:8px}
-  .ss-character{max-width:57%}
-  .ss-map-menu{width:190px;max-height:50vh;padding:6px;border-radius:16px}
-  .ss-map-option{padding:10px;font-size:13px}
+    .hub{grid-template-columns:minmax(0,1fr);gap:8px;padding-top:12px}
+    .col-middle .spacer{display:none}
+    .greeting-line{font-size:21px}
+    .ss-card{border-radius:25px}
+    .ss-content{padding:6% 0 6% 5%}
+    .ss-copy{width:61%}
+    .ss-logo{width:85%}
+    .ss-description{width:92%}
+    .ss-play{min-width:0;padding:10px 17px 10px 12px;gap:7px}
+    .ss-map-trigger{gap:6px;padding:10px 11px}
+    .ss-actions{gap:8px}
+    .ss-character{max-width:57%}
+    .ss-map-menu{width:190px;max-height:50vh;padding:6px;border-radius:16px}
+    .ss-map-option{padding:10px;font-size:13px}
 }
+
 @media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
-  .ss-play-shine,.ss-ambient{display:none}
+    *,*::before,*::after{
+        animation-duration:.01ms!important;
+        animation-iteration-count:1!important;
+        scroll-behavior:auto!important;
+        transition-duration:.01ms!important
+    }
+    .ss-play-shine,.ss-ambient{display:none}
+    .game-loader-spinner,.game-loader-bar::after{animation:none}
 }
 </style>
 </head>
+
 <body>
+
+<!-- LOADING SCREEN -->
+<div class="game-loader" id="game-loader" aria-hidden="true">
+    <div class="game-loader-glow"></div>
+    <div class="game-loader-content">
+        <div class="game-loader-spinner"></div>
+        <div class="game-loader-title" id="loader-title">Launching game</div>
+        <div class="game-loader-subtitle">Preparing your experience</div>
+        <div class="game-loader-bar"></div>
+    </div>
+</div>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <filter id="morph-threshold" x="-80%" y="-100%" width="260%" height="300%">
-      <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 255 -140"></feColorMatrix>
-    </filter>
-  </defs>
+    <defs>
+        <filter id="morph-threshold" x="-80%" y="-100%" width="260%" height="300%">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 255 -140"></feColorMatrix>
+        </filter>
+    </defs>
 </svg>
 
 <main class="hub">
-  <section class="col col-left" aria-label="Featured game">
-    <div class="greeting">
-      <div class="greeting-line">
-        <div class="greeting-morph" id="gbox"><span id="g1"></span><span id="g2"></span></div>
-        <span class="greeting-name"><span id="gname">there</span><span id="gend">.</span></span>
-      </div>
-    </div>
 
-    <div class="ss-card" id="ss-card">
-      <img class="ss-background" data-src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
-      <div class="ss-background-wash"></div>
-      <div class="ss-background-vignette"></div>
-      <div class="ss-ambient ss-ambient-one"></div>
-      <div class="ss-ambient ss-ambient-two"></div>
-      <img class="ss-character" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
-      <div class="ss-content">
-        <div class="ss-copy">
-          <img class="ss-logo" data-src="https://i.ibb.co/R4Mm1TwN/Surfers-Logo-from-Photopea.png" alt="Subway Surfers">
-          <p class="ss-description">Jump over trains while being chased by a cop idk. Probably some dark, big brain lore in there...</p>
-          <div class="ss-actions">
-            <button class="ss-play fx" type="button">
-              <span class="ss-play-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
-              </span>
-              <span class="ss-play-text">Play</span>
-              <span class="ss-play-shine"></span>
-            </button>
-            <div class="ss-map-wrap">
-              <button class="ss-map-trigger fx" type="button" aria-expanded="false" aria-haspopup="true">
-                <svg class="ss-map-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
-                <span class="ss-map-label">Poki</span>
-                <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 14 5-5 5 5"></path></svg>
-              </button>
-              <div class="ss-map-menu" role="menu" hidden></div>
+    <section class="col col-left" aria-label="Featured game">
+
+        <div class="greeting">
+            <div class="greeting-line">
+                <div class="greeting-morph" id="gbox">
+                    <span id="g1"></span>
+                    <span id="g2"></span>
+                </div>
+                <span class="greeting-name">
+                    <span id="gname">there</span><span id="gend">.</span>
+                </span>
             </div>
-          </div>
         </div>
-      </div>
-      <div class="ss-card-edge"></div>
-    </div>
-    <p class="ss-launches" id="launch-line">Launches: 0</p>
-  </section>
 
-  <section class="col col-middle" aria-label="Game modes">
-    <div class="spacer"></div>
-    <div class="modes">
-      <button class="mode mode-multi" type="button" data-mode="multiplayer" aria-disabled="true">
-        <span class="mode-bg">
-          <img class="mode-art-bg" data-src="https://s1.dmcdn.net/v/aPhRC1foMxlLzf-Bf/x1080" alt="">
-          <span class="mode-wash"></span>
-          <span class="mode-crowd" id="crowd"></span>
-          <span class="mode-spec"></span>
-          <span class="mode-rim"></span>
-        </span>
-        <span class="mode-text">
-          <span class="mode-title">Multiplayer</span>
-          <span class="mode-sub">Coming soon</span>
-        </span>
-      </button>
+        <div class="ss-card" id="ss-card">
+            <img class="ss-background" data-src="https://i.ibb.co/hJB3PHQ8/Surfers-BG.jpg" alt="">
+            <div class="ss-background-wash"></div>
+            <div class="ss-background-vignette"></div>
+            <div class="ss-ambient ss-ambient-one"></div>
+            <div class="ss-ambient ss-ambient-two"></div>
+            <img class="ss-character" data-src="https://i.ibb.co/gbxL4MBK/Jakeeee-Photopea.png" alt="">
 
-      <button class="mode mode-horror" type="button" data-mode="horror">
-        <span class="mode-bg">
-          <img class="mode-art-bg" data-src="https://brunecoding.github.io/ArborUltra/HorrorBG.png" alt="">
-          <span class="mode-wash"></span>
-          <img class="mode-train" data-src="https://brunecoding.github.io/ArborUltra/TrainHorror.png" alt="" style="transform: rotateY(180deg)">
-          <span class="mode-spec"></span>
-          <span class="mode-rim"></span>
-        </span>
-        <img class="mode-jake" data-src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
-        <span class="mode-text">
-          <span class="mode-title">Subway Suffers<svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg></span>
-        </span>
-      </button>
-    </div>
-  </section>
+            <div class="ss-content">
+                <div class="ss-copy">
 
-  <aside class="col col-side" aria-label="Sidebar"></aside>
+                    <img class="ss-logo" data-src="https://i.ibb.co/R4Mm1TwN/Surfers-Logo-from-Photopea.png" alt="Subway Surfers">
+
+                    <p class="ss-description">
+                        Jump over trains while being chased by a cop idk. Probably some dark, big brain lore in there...
+                    </p>
+
+                    <div class="ss-actions">
+
+                        <button class="ss-play fx" type="button">
+                            <span class="ss-play-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    <path d="M8 5v14l11-7z"></path>
+                                </svg>
+                            </span>
+                            <span class="ss-play-text">Play</span>
+                            <span class="ss-play-shine"></span>
+                        </button>
+
+                        <div class="ss-map-wrap">
+
+                            <button class="ss-map-trigger fx" type="button" aria-expanded="false" aria-haspopup="true">
+                                <svg class="ss-map-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                                    <path d="M2 12h20"></path>
+                                </svg>
+                                <span class="ss-map-label">Poki</span>
+                                <svg class="ss-map-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m7 14 5-5 5 5"></path>
+                                </svg>
+                            </button>
+
+                            <div class="ss-map-menu" role="menu" hidden></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ss-card-edge"></div>
+        </div>
+
+        <p class="ss-launches" id="launch-line">Launches: 0</p>
+
+    </section>
+
+    <section class="col col-middle" aria-label="Game modes">
+
+        <div class="spacer"></div>
+
+        <div class="modes">
+
+            <!-- MULTIPLAYER -->
+            <button class="mode mode-multi" type="button" data-mode="multiplayer">
+
+                <span class="mode-bg">
+                    <img class="mode-art-bg" data-src="https://s1.dmcdn.net/v/aPhRC1foMxlLzf-Bf/x1080" alt="">
+                    <span class="mode-wash"></span>
+                    <span class="mode-crowd" id="crowd"></span>
+                    <span class="mode-spec"></span>
+                    <span class="mode-rim"></span>
+                </span>
+
+                <span class="mode-text">
+                    <span class="mode-title">
+                        Multiplayer
+                        <svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m9 6 6 6-6 6"></path>
+                        </svg>
+                    </span>
+                    <span class="mode-sub">Play with friends</span>
+                </span>
+
+            </button>
+
+            <!-- HORROR -->
+            <button class="mode mode-horror" type="button" data-mode="horror">
+
+                <span class="mode-bg">
+                    <img class="mode-art-bg" data-src="https://brunecoding.github.io/ArborUltra/HorrorBG.png" alt="">
+                    <span class="mode-wash"></span>
+                    <img class="mode-train" data-src="https://brunecoding.github.io/ArborUltra/TrainHorror.png" alt="" style="transform:rotateY(180deg)">
+                    <span class="mode-spec"></span>
+                    <span class="mode-rim"></span>
+                </span>
+
+                <img class="mode-jake" data-src="https://brunecoding.github.io/ArborUltra/JakeHorror.png" alt="">
+
+                <span class="mode-text">
+                    <span class="mode-title">
+                        Subway Suffers
+                        <svg class="mode-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="m9 6 6 6-6 6"></path>
+                        </svg>
+                    </span>
+                </span>
+
+            </button>
+
+        </div>
+    </section>
+
+    <aside class="col col-side" aria-label="Sidebar"></aside>
+
 </main>
 
 <script>
 (() => {
-  if (window.self !== window.top) document.documentElement.classList.add("embedded");
 
-  const POKI_URL = "https://poki.com/en/g/subway-surfers";
-  const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
-  const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
-  const STORE_KEY = "arborHubLastPlayed";
-  const CHAR_BASE = "https://5dd312fa-015f-11ea-ad56-9cb6d0d995f7.gdn.poki.com/ec5c789a-69d7-476d-aa4e-1a0064850d79/assets/character-previews/preview-";
-  const CROWD_POOL = ["boombot", "costa", "danunder", "dino", "frank", "princek", "tricky", "tagbot", "tasha", "rudyrascal", "spike", "lily", "king"];
-  const CROWD_SIZE = 8;
-  const MAPS = [
-    ["Poki", null],
-    ["Hong Kong", "193-hongkong"],
-    ["Singapore", "177-singapore"],
-    ["Tokyo", "184-tokyo"],
-    ["Seoul", "1103-seoul"],
-    ["Bali", "1106-bali"],
-    ["Mumbai", "189-mumbai"],
-    ["Marrakesh", "195-marrakesh"],
-    ["Cairo", "1116-cairo"],
-    ["Venice", "199-venice"],
-    ["Iceland", "1117-iceland"],
-    ["Havana", "190-havana"],
-    ["New York", "191-newyork"],
-    ["Atlanta", "198-atlanta"]
-  ];
-  const THEMES = Object.fromEntries(MAPS);
-  const PIN = '<svg class="ss-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
-
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const openTab = url => window.open(url, "_blank", "noopener");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  const buildCrowd = () => {
-    const host = $("#crowd");
-    if (!host) return;
-    const pool = [...CROWD_POOL];
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
+    if (window.self !== window.top) {
+        document.documentElement.classList.add("embedded");
     }
-    const picks = pool.slice(0, CROWD_SIZE);
-    const half = Math.floor(picks.length / 2);
-    const names = [...picks.slice(0, half), "jake", ...picks.slice(half)];
-    const mid = names.indexOf("jake");
-    names.forEach((name, i) => {
-      const distance = Math.abs(i - mid);
-      const img = document.createElement("img");
-      img.className = "mode-char" + (name === "jake" ? " is-jake" : "");
-      img.alt = "";
-      img.dataset.src = CHAR_BASE + name + ".webp";
-      img.style.left = (8 + i * (84 / (names.length - 1))) + "%";
-      img.style.height = (name === "jake" ? 124 : 108 - distance * 4) + "%";
-      img.style.zIndex = String(20 - distance * 2);
-      host.appendChild(img);
-    });
-  };
 
-  buildCrowd();
+    /* CONFIGURATION */
 
-  if (!window.ARBOR_HUB) {
-    document.querySelectorAll("img[data-src]").forEach(img => { img.src = img.dataset.src; });
-  }
+    const POKI_URL = "https://poki.com/en/g/subway-surfers";
+    const THEME_BASE = "https://yell0wsuit.page/assets/games/subway-surfers/index.html?theme=";
+    const HORROR_URL = "https://www.miniplay.com/embed/subway-horror-chapter-1";
 
-  const readName = () => {
-    let name = "";
-    if (window.ARBOR_HUB && window.ARBOR_HUB.username) {
-      name = window.ARBOR_HUB.username;
-    } else if (location.hash.length > 1) {
-      try { name = decodeURIComponent(location.hash.slice(1)); } catch { name = location.hash.slice(1); }
-    }
-    name = String(name).trim();
-    return name ? name.split(/\s+/)[0] : "there";
-  };
+    const MULTIPLAYER_URL = "https://brunecoding.github.io/Subway-Surfers-Multiplayer/index.html?mp=1";
 
-  let userName = readName();
+    const STORE_KEY = "arborHubLastPlayed";
 
-  const launchLine = $("#launch-line");
+    const CHAR_BASE = "https://5dd312fa-015f-11ea-ad56-9cb6d0d995f7.gdn.poki.com/ec5c789a-69d7-476d-aa4e-1a0064850d79/assets/character-previews/preview-";
 
-  const readCount = () => {
-    try { return Number((JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}).count) || 0; } catch { return 0; }
-  };
+    const CROWD_POOL = [
+        "boombot","costa","danunder","dino","frank","princek",
+        "tricky","tagbot","tasha","rudyrascal","spike","lily","king"
+    ];
 
-  const renderLaunches = () => {
-    launchLine.textContent = "Launches: " + readCount();
-  };
+    const CROWD_SIZE = 8;
 
-  const countLaunch = () => {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify({ count: readCount() + 1 })); } catch {}
-    renderLaunches();
-  };
+    const MAPS = [
+        ["Poki", null],
+        ["Hong Kong", "193-hongkong"],
+        ["Singapore", "177-singapore"],
+        ["Tokyo", "184-tokyo"],
+        ["Seoul", "1103-seoul"],
+        ["Bali", "1106-bali"],
+        ["Mumbai", "189-mumbai"],
+        ["Marrakesh", "195-marrakesh"],
+        ["Cairo", "1116-cairo"],
+        ["Venice", "199-venice"],
+        ["Iceland", "1117-iceland"],
+        ["Havana", "190-havana"],
+        ["New York", "191-newyork"],
+        ["Atlanta", "198-atlanta"]
+    ];
 
-  renderLaunches();
+    const THEMES = Object.fromEntries(MAPS);
 
-  const trigger = $(".ss-map-trigger");
-  const menu = $(".ss-map-menu");
-  const label = $(".ss-map-label");
-  const playBtn = $(".ss-play");
-  let currentMap = "Poki";
+    const PIN = '<svg class="ss-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
 
-  MAPS.forEach(([name]) => {
-    const option = document.createElement("button");
-    option.type = "button";
-    option.className = "ss-map-option" + (name === currentMap ? " is-selected" : "");
-    option.setAttribute("role", "menuitemradio");
-    option.setAttribute("aria-checked", String(name === currentMap));
-    option.dataset.map = name;
-    option.innerHTML = PIN + "<span>" + name + "</span>";
-    menu.appendChild(option);
-  });
+    const $ = (selector, root = document) => root.querySelector(selector);
 
-  const options = [...menu.children];
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const setOpen = open => {
-    if (open) {
-      menu.classList.remove("up");
-      menu.hidden = false;
-      const rect = trigger.getBoundingClientRect();
-      const below = window.innerHeight - rect.bottom;
-      if (below < menu.offsetHeight + 16 && rect.top > below) menu.classList.add("up");
-      const selected = $(".is-selected", menu);
-      if (selected) selected.scrollIntoView({ block: "nearest" });
-    } else {
-      menu.hidden = true;
-    }
-    trigger.setAttribute("aria-expanded", String(open));
-  };
+    /* LOADING SCREEN */
 
-  trigger.addEventListener("click", event => {
-    event.stopPropagation();
-    setOpen(menu.hidden);
-  });
+    const loader = $("#game-loader");
+    const loaderTitle = $("#loader-title");
 
-  options.forEach((option, index) => {
-    option.addEventListener("click", () => {
-      currentMap = option.dataset.map;
-      label.textContent = currentMap;
-      options.forEach(item => {
-        const selected = item === option;
-        item.classList.toggle("is-selected", selected);
-        item.setAttribute("aria-checked", String(selected));
-      });
-      setOpen(false);
-      trigger.focus();
-    });
+    let loaderTimer = null;
+    let launching = false;
 
-    option.addEventListener("keydown", event => {
-      let next = index;
-      if (event.key === "ArrowDown") next++;
-      else if (event.key === "ArrowUp") next--;
-      else return;
-      event.preventDefault();
-      options[(next + options.length) % options.length].focus();
-    });
-  });
+    const showLoader = (title) => {
+        clearTimeout(loaderTimer);
 
-  document.addEventListener("click", event => {
-    if (!$(".ss-map-wrap").contains(event.target)) setOpen(false);
-  });
+        loaderTitle.textContent = "Launching " + title;
 
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !menu.hidden) {
-      setOpen(false);
-      trigger.focus();
-    }
-  });
+        loader.classList.add("active");
+        loader.setAttribute("aria-hidden", "false");
 
-  playBtn.addEventListener("click", () => {
-    const theme = THEMES[currentMap];
-    openTab(theme == null ? POKI_URL : THEME_BASE + theme);
-    countLaunch();
-  });
+        loaderTimer = setTimeout(() => {
+            hideLoader();
+        }, 1800);
+    };
 
-  document.querySelectorAll(".mode").forEach(button => {
-    button.addEventListener("click", () => {
-      if (button.getAttribute("aria-disabled") === "true") return;
-      if (button.dataset.mode === "horror") {
-        openTab(HORROR_URL);
+    const hideLoader = () => {
+        clearTimeout(loaderTimer);
+
+        loader.classList.remove("active");
+        loader.setAttribute("aria-hidden", "true");
+
+        launching = false;
+    };
+
+    /*
+       Opens a new tab immediately from the user's click.
+       This avoids popup blockers.
+    */
+
+    const launchGame = (url, title) => {
+        if (launching) return;
+
+        launching = true;
+
+        showLoader(title);
+
+        const newTab = window.open(url, "_blank", "noopener");
+
+        if (!newTab) {
+            hideLoader();
+            return;
+        }
+
         countLaunch();
-      }
-    });
 
-    button.addEventListener("pointerenter", () => button.classList.add("is-lit"));
-    button.addEventListener("pointermove", event => {
-      const rect = button.getBoundingClientRect();
-      button.style.setProperty("--mx", (event.clientX - rect.left) + "px");
-      button.style.setProperty("--my", (event.clientY - rect.top) + "px");
-    });
-    button.addEventListener("pointerleave", () => {
-      button.classList.remove("is-lit");
-      button.style.setProperty("--mx", "50%");
-      button.style.setProperty("--my", "50%");
-    });
-  });
+        /*
+           Maximum loader duration: 1.8 seconds.
+           The new game opens immediately in its own tab.
+        */
+    };
 
-  document.querySelectorAll(".fx").forEach(element => {
-    element.addEventListener("pointermove", event => {
-      const rect = element.getBoundingClientRect();
-      element.style.setProperty("--mx", (event.clientX - rect.left) + "px");
-      element.style.setProperty("--my", (event.clientY - rect.top) + "px");
-      element.style.setProperty("--prox", "1");
-    });
-    element.addEventListener("pointerleave", () => {
-      element.style.setProperty("--prox", "0");
-      element.style.setProperty("--mx", "50%");
-      element.style.setProperty("--my", "50%");
-    });
-  });
+    /* RANDOM MULTIPLAYER CROWD */
 
-  const card = $("#ss-card");
-  card.addEventListener("pointermove", event => {
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty("--card-mx", (event.clientX - rect.left) + "px");
-    card.style.setProperty("--card-my", (event.clientY - rect.top) + "px");
-  });
-  card.addEventListener("pointerleave", () => {
-    card.style.setProperty("--card-mx", "50%");
-    card.style.setProperty("--card-my", "50%");
-  });
+    const buildCrowd = () => {
+        const host = $("#crowd");
+        if (!host) return;
 
-  const gBox = $("#gbox");
-  const g1 = $("#g1");
-  const g2 = $("#g2");
-  const gName = $("#gname");
-  const gEnd = $("#gend");
-  const MORPH = 1;
+        const pool = [...CROWD_POOL];
 
-  const RAW_GREETINGS = [
-    "Welcome back",
-    "Hello again",
-    "Ready to go?",
-    "Greetings",
-    "Wsp",
-    "What's good?",
-    "Welcome to the gng",
-    "Yo, welcome back",
-    "Ayy, you're back",
-    "Hey there",
-    "Yo!",
-    "Sup?",
-    "Wassup gang",
-    "Welcome back, legend",
-    "Ayo, welcome back",
-    "What's the move?",
-    "We meet again",
-    "Good to see you",
-    "The gang's all here",
-    "Yo",
-    "How we doing?",
-    "What's poppin'?",
-    "Ayyy",
-    "Well, well, well",
-    "You're back!",
-    "Welcome aboard",
-    "Ready when you are",
-    "Oh, it's you again",
-    "Hey",
-    "Wsg",
-    "We back",
-    "Locked in?",
-    "Another day, another W",
-    "Cookin?",
-    "Yo yo yo",
-    "Chillin'?",
-    "Big welcome back",
-    "Back in business",
-    "How's life?",
-    "Ayo gang",
-    "What's happening,",
-    "Sup gang?",
-    "W mans",
-    "Alright, let's roll",
-    "What's cooking?"
-  ];
+        for (let i = pool.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
 
-  const parseGreeting = raw => ({
-    text: raw.replace(/[.!?,]+$/, "") + ",",
-    end: /[.!?]$/.test(raw) ? raw.slice(-1) : "."
-  });
+        const picks = pool.slice(0, CROWD_SIZE);
+        const half = Math.floor(picks.length / 2);
 
-  const timeGreeting = () => {
-    const hour = new Date().getHours();
-    return hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  };
+        const names = [
+            ...picks.slice(0, half),
+            "jake",
+            ...picks.slice(half)
+        ];
 
-  const greetings = [timeGreeting(), ...RAW_GREETINGS].map(parseGreeting);
+        const mid = names.indexOf("jake");
 
-  let index = 0;
-  let current = greetings[0];
-  let incoming = null;
-  let morphing = false;
-  let morph = 0;
-  let elapsed = 0;
-  let factor = 1;
-  let widthFrom = 0;
-  let widthTo = 0;
-  let endSwapped = false;
-  let lastTime = performance.now();
+        names.forEach((name, i) => {
 
-  let activity = 0.5;
-  let moved = 0;
-  let interactions = 0;
-  let lastX = null;
-  let lastY = null;
+            const distance = Math.abs(i - mid);
 
-  document.addEventListener("pointermove", event => {
-    if (lastX !== null) moved += Math.hypot(event.clientX - lastX, event.clientY - lastY);
-    lastX = event.clientX;
-    lastY = event.clientY;
-  });
-  document.documentElement.addEventListener("pointerleave", () => { lastX = null; lastY = null; });
-  ["pointerdown", "keydown", "wheel", "touchmove"].forEach(type => {
-    document.addEventListener(type, () => { interactions++; }, { passive: true });
-  });
+            const img = document.createElement("img");
 
-  setInterval(() => {
-    const target = Math.min(1, moved / 400 + interactions * 0.15);
-    activity += (target - activity) * 0.3;
-    moved = 0;
-    interactions = 0;
-  }, 1000);
+            img.className = "mode-char" + (name === "jake" ? " is-jake" : "");
+            img.alt = "";
+            img.dataset.src = CHAR_BASE + name + ".webp";
 
-  const delayFor = a => (20 - 12 * a) * factor;
-  const pickFactor = () => Math.random() < 0.1 ? 0.75 : 0.9 + Math.random() * 0.25;
-  const smooth = f => f * f * (3 - 2 * f);
+            img.style.left = (8 + i * (84 / (names.length - 1))) + "%";
 
-  const showCurrent = () => {
-    g1.textContent = current.text;
-    g1.style.filter = "";
-    g1.style.opacity = "100%";
-    g2.textContent = "";
-    g2.style.filter = "";
-    g2.style.opacity = "0%";
-    gEnd.textContent = current.end;
-    gEnd.style.opacity = "1";
-    gEnd.style.filter = "";
-    gBox.style.width = g1.offsetWidth + "px";
-  };
+            img.style.height = (name === "jake" ? 124 : 108 - distance * 4) + "%";
 
-  const startMorph = () => {
-    let next = index;
-    while (next === index) next = Math.floor(Math.random() * greetings.length);
-    index = next;
-    incoming = greetings[index];
-    g2.textContent = incoming.text;
-    widthFrom = g1.offsetWidth;
-    widthTo = g2.offsetWidth;
-    endSwapped = false;
-    morph = 0;
-    morphing = true;
-  };
+            img.style.zIndex = String(20 - distance * 2);
 
-  const setMorph = fraction => {
-    const f = Math.max(0, Math.min(1, fraction));
-    const inverse = 1 - f;
-    g2.style.filter = "blur(" + Math.min(8 / f - 8, 100) + "px)";
-    g2.style.opacity = Math.pow(f, 0.4) * 100 + "%";
-    g1.style.filter = "blur(" + Math.min(8 / inverse - 8, 100) + "px)";
-    g1.style.opacity = Math.pow(inverse, 0.4) * 100 + "%";
-    gBox.style.width = (widthFrom + (widthTo - widthFrom) * smooth(f)) + "px";
-    if (f >= 0.5 && !endSwapped) {
-      gEnd.textContent = incoming.end;
-      endSwapped = true;
-    }
-    gEnd.style.opacity = String(Math.abs(1 - 2 * f));
-  };
+            host.appendChild(img);
 
-  const finishMorph = () => {
-    current = incoming;
-    incoming = null;
-    morphing = false;
-    elapsed = 0;
-    factor = pickFactor();
-    showCurrent();
-  };
+        });
+    };
 
-  const tick = now => {
-    const dt = Math.min((now - lastTime) / 1000, 0.05);
-    lastTime = now;
+    buildCrowd();
 
-    if (morphing) {
-      morph += dt;
-      setMorph(morph / MORPH);
-      if (morph >= MORPH) finishMorph();
-    } else {
-      elapsed += dt;
-      if (elapsed >= delayFor(activity)) startMorph();
+    /* IMAGE LOADING */
+
+    if (!window.ARBOR_HUB) {
+        document.querySelectorAll("img[data-src]").forEach(img => {
+            img.src = img.dataset.src;
+        });
     }
 
-    requestAnimationFrame(tick);
-  };
+    /* USERNAME */
 
-  gName.textContent = userName;
-  factor = pickFactor();
-  showCurrent();
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => { if (!morphing) gBox.style.width = g1.offsetWidth + "px"; });
-  }
-  if (!reducedMotion) requestAnimationFrame(tick);
+    const readName = () => {
 
-  const setUser = name => {
-    userName = String(name || "").trim().split(/\s+/)[0] || "there";
+        let name = "";
+
+        if (window.ARBOR_HUB && window.ARBOR_HUB.username) {
+            name = window.ARBOR_HUB.username;
+        } else if (location.hash.length > 1) {
+            try {
+                name = decodeURIComponent(location.hash.slice(1));
+            } catch {
+                name = location.hash.slice(1);
+            }
+        }
+
+        name = String(name).trim();
+
+        return name ? name.split(/\s+/)[0] : "there";
+    };
+
+    let userName = readName();
+
+    /* LAUNCH COUNTER */
+
+    const launchLine = $("#launch-line");
+
+    const readCount = () => {
+        try {
+            return Number((JSON.parse(localStorage.getItem(STORE_KEY) || "null") || {}).count) || 0;
+        } catch {
+            return 0;
+        }
+    };
+
+    const renderLaunches = () => {
+        launchLine.textContent = "Launches: " + readCount();
+    };
+
+    const countLaunch = () => {
+        try {
+            localStorage.setItem(
+                STORE_KEY,
+                JSON.stringify({ count: readCount() + 1 })
+            );
+        } catch {}
+
+        renderLaunches();
+    };
+
+    renderLaunches();
+
+    /* MAP SELECTOR */
+
+    const trigger = $(".ss-map-trigger");
+    const menu = $(".ss-map-menu");
+    const label = $(".ss-map-label");
+    const playBtn = $(".ss-play");
+
+    let currentMap = "Poki";
+
+    MAPS.forEach(([name]) => {
+
+        const option = document.createElement("button");
+
+        option.type = "button";
+        option.className = "ss-map-option" + (name === currentMap ? " is-selected" : "");
+
+        option.setAttribute("role", "menuitemradio");
+        option.setAttribute("aria-checked", String(name === currentMap));
+
+        option.dataset.map = name;
+        option.innerHTML = PIN + "<span>" + name + "</span>";
+
+        menu.appendChild(option);
+
+    });
+
+    const options = [...menu.children];
+
+    const setOpen = open => {
+
+        if (open) {
+
+            menu.classList.remove("up");
+            menu.hidden = false;
+
+            const rect = trigger.getBoundingClientRect();
+            const below = window.innerHeight - rect.bottom;
+
+            if (below < menu.offsetHeight + 16 && rect.top > below) {
+                menu.classList.add("up");
+            }
+
+            const selected = $(".is-selected", menu);
+
+            if (selected) {
+                selected.scrollIntoView({ block: "nearest" });
+            }
+
+        } else {
+            menu.hidden = true;
+        }
+
+        trigger.setAttribute("aria-expanded", String(open));
+
+    };
+
+    trigger.addEventListener("click", event => {
+        event.stopPropagation();
+        setOpen(menu.hidden);
+    });
+
+    options.forEach((option, index) => {
+
+        option.addEventListener("click", () => {
+
+            currentMap = option.dataset.map;
+            label.textContent = currentMap;
+
+            options.forEach(item => {
+
+                const selected = item === option;
+
+                item.classList.toggle("is-selected", selected);
+                item.setAttribute("aria-checked", String(selected));
+
+            });
+
+            setOpen(false);
+            trigger.focus();
+
+        });
+
+        option.addEventListener("keydown", event => {
+
+            let next = index;
+
+            if (event.key === "ArrowDown") next++;
+            else if (event.key === "ArrowUp") next--;
+            else return;
+
+            event.preventDefault();
+
+            options[(next + options.length) % options.length].focus();
+
+        });
+
+    });
+
+    document.addEventListener("click", event => {
+
+        if (!$(".ss-map-wrap").contains(event.target)) {
+            setOpen(false);
+        }
+
+    });
+
+    document.addEventListener("keydown", event => {
+
+        if (event.key === "Escape" && !menu.hidden) {
+            setOpen(false);
+            trigger.focus();
+        }
+
+    });
+
+    /* MAIN SUBWAY SURFERS PLAY BUTTON */
+
+    playBtn.addEventListener("click", () => {
+
+        const theme = THEMES[currentMap];
+
+        const url = theme == null
+            ? POKI_URL
+            : THEME_BASE + theme;
+
+        launchGame(url, "Subway Surfers");
+
+    });
+
+    /* GAME MODES */
+
+    document.querySelectorAll(".mode").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const mode = button.dataset.mode;
+
+            if (mode === "multiplayer") {
+
+                launchGame(
+                    MULTIPLAYER_URL,
+                    "Subway Surfers Multiplayer"
+                );
+
+            }
+
+            else if (mode === "horror") {
+
+                launchGame(
+                    HORROR_URL,
+                    "Subway Suffers"
+                );
+
+            }
+
+        });
+
+        button.addEventListener("pointerenter", () => {
+            button.classList.add("is-lit");
+        });
+
+        button.addEventListener("pointermove", event => {
+
+            const rect = button.getBoundingClientRect();
+
+            button.style.setProperty("--mx", (event.clientX - rect.left) + "px");
+            button.style.setProperty("--my", (event.clientY - rect.top) + "px");
+
+        });
+
+        button.addEventListener("pointerleave", () => {
+
+            button.classList.remove("is-lit");
+
+            button.style.setProperty("--mx", "50%");
+            button.style.setProperty("--my", "50%");
+
+        });
+
+    });
+
+    /* GLASS BUTTON LIGHTING */
+
+    document.querySelectorAll(".fx").forEach(element => {
+
+        element.addEventListener("pointermove", event => {
+
+            const rect = element.getBoundingClientRect();
+
+            element.style.setProperty("--mx", (event.clientX - rect.left) + "px");
+            element.style.setProperty("--my", (event.clientY - rect.top) + "px");
+            element.style.setProperty("--prox", "1");
+
+        });
+
+        element.addEventListener("pointerleave", () => {
+
+            element.style.setProperty("--prox", "0");
+            element.style.setProperty("--mx", "50%");
+            element.style.setProperty("--my", "50%");
+
+        });
+
+    });
+
+    /* FEATURED CARD LIGHTING */
+
+    const card = $("#ss-card");
+
+    card.addEventListener("pointermove", event => {
+
+        const rect = card.getBoundingClientRect();
+
+        card.style.setProperty("--card-mx", (event.clientX - rect.left) + "px");
+        card.style.setProperty("--card-my", (event.clientY - rect.top) + "px");
+
+    });
+
+    card.addEventListener("pointerleave", () => {
+
+        card.style.setProperty("--card-mx", "50%");
+        card.style.setProperty("--card-my", "50%");
+
+    });
+
+    /* ANIMATED GREETING */
+
+    const gBox = $("#gbox");
+    const g1 = $("#g1");
+    const g2 = $("#g2");
+    const gName = $("#gname");
+    const gEnd = $("#gend");
+
+    const MORPH = 1;
+
+    const RAW_GREETINGS = [
+        "Welcome back",
+        "Hello again",
+        "Ready to go?",
+        "Greetings",
+        "Wsp",
+        "What's good?",
+        "Welcome to the gng",
+        "Yo, welcome back",
+        "Ayy, you're back",
+        "Hey there",
+        "Yo!",
+        "Sup?",
+        "Wassup gang",
+        "Welcome back, legend",
+        "Ayo, welcome back",
+        "What's the move?",
+        "We meet again",
+        "Good to see you",
+        "The gang's all here",
+        "Yo",
+        "How we doing?",
+        "What's poppin'?",
+        "Ayyy",
+        "Well, well, well",
+        "You're back!",
+        "Welcome aboard",
+        "Ready when you are",
+        "Oh, it's you again",
+        "Hey",
+        "Wsg",
+        "We back",
+        "Locked in?",
+        "Another day, another W",
+        "Cookin?",
+        "Yo yo yo",
+        "Chillin'?",
+        "Big welcome back",
+        "Back in business",
+        "How's life?",
+        "Ayo gang",
+        "What's happening,",
+        "Sup gang?",
+        "W mans",
+        "Alright, let's roll",
+        "What's cooking?"
+    ];
+
+    const parseGreeting = raw => ({
+        text: raw.replace(/[.!?,]+$/, "") + ",",
+        end: /[.!?]$/.test(raw) ? raw.slice(-1) : "."
+    });
+
+    const timeGreeting = () => {
+
+        const hour = new Date().getHours();
+
+        return hour < 12
+            ? "Good morning"
+            : hour < 18
+                ? "Good afternoon"
+                : "Good evening";
+
+    };
+
+    const greetings = [timeGreeting(), ...RAW_GREETINGS].map(parseGreeting);
+
+    let index = 0;
+    let current = greetings[0];
+    let incoming = null;
+
+    let morphing = false;
+    let morph = 0;
+    let elapsed = 0;
+    let factor = 1;
+
+    let widthFrom = 0;
+    let widthTo = 0;
+
+    let endSwapped = false;
+    let lastTime = performance.now();
+
+    let activity = 0.5;
+    let moved = 0;
+    let interactions = 0;
+
+    let lastX = null;
+    let lastY = null;
+
+    document.addEventListener("pointermove", event => {
+
+        if (lastX !== null) {
+            moved += Math.hypot(
+                event.clientX - lastX,
+                event.clientY - lastY
+            );
+        }
+
+        lastX = event.clientX;
+        lastY = event.clientY;
+
+    });
+
+    document.documentElement.addEventListener("pointerleave", () => {
+        lastX = null;
+        lastY = null;
+    });
+
+    ["pointerdown", "keydown", "wheel", "touchmove"].forEach(type => {
+
+        document.addEventListener(type, () => {
+            interactions++;
+        }, { passive: true });
+
+    });
+
+    setInterval(() => {
+
+        const target = Math.min(1, moved / 400 + interactions * 0.15);
+
+        activity += (target - activity) * 0.3;
+
+        moved = 0;
+        interactions = 0;
+
+    }, 1000);
+
+    const delayFor = a => (20 - 12 * a) * factor;
+
+    const pickFactor = () => Math.random() < 0.1
+        ? 0.75
+        : 0.9 + Math.random() * 0.25;
+
+    const smooth = f => f * f * (3 - 2 * f);
+
+    const showCurrent = () => {
+
+        g1.textContent = current.text;
+        g1.style.filter = "";
+        g1.style.opacity = "100%";
+
+        g2.textContent = "";
+        g2.style.filter = "";
+        g2.style.opacity = "0%";
+
+        gEnd.textContent = current.end;
+        gEnd.style.opacity = "1";
+        gEnd.style.filter = "";
+
+        gBox.style.width = g1.offsetWidth + "px";
+
+    };
+
+    const startMorph = () => {
+
+        let next = index;
+
+        while (next === index) {
+            next = Math.floor(Math.random() * greetings.length);
+        }
+
+        index = next;
+        incoming = greetings[index];
+
+        g2.textContent = incoming.text;
+
+        widthFrom = g1.offsetWidth;
+        widthTo = g2.offsetWidth;
+
+        endSwapped = false;
+        morph = 0;
+        morphing = true;
+
+    };
+
+    const setMorph = fraction => {
+
+        const f = Math.max(0, Math.min(1, fraction));
+        const inverse = 1 - f;
+
+        g2.style.filter = "blur(" + Math.min(8 / f - 8, 100) + "px)";
+        g2.style.opacity = Math.pow(f, 0.4) * 100 + "%";
+
+        g1.style.filter = "blur(" + Math.min(8 / inverse - 8, 100) + "px)";
+        g1.style.opacity = Math.pow(inverse, 0.4) * 100 + "%";
+
+        gBox.style.width =
+            (widthFrom + (widthTo - widthFrom) * smooth(f)) + "px";
+
+        if (f >= 0.5 && !endSwapped) {
+            gEnd.textContent = incoming.end;
+            endSwapped = true;
+        }
+
+        gEnd.style.opacity = String(Math.abs(1 - 2 * f));
+
+    };
+
+    const finishMorph = () => {
+
+        current = incoming;
+        incoming = null;
+
+        morphing = false;
+        elapsed = 0;
+
+        factor = pickFactor();
+
+        showCurrent();
+
+    };
+
+    const tick = now => {
+
+        const dt = Math.min((now - lastTime) / 1000, 0.05);
+
+        lastTime = now;
+
+        if (morphing) {
+
+            morph += dt;
+
+            setMorph(morph / MORPH);
+
+            if (morph >= MORPH) {
+                finishMorph();
+            }
+
+        } else {
+
+            elapsed += dt;
+
+            if (elapsed >= delayFor(activity)) {
+                startMorph();
+            }
+
+        }
+
+        requestAnimationFrame(tick);
+
+    };
+
     gName.textContent = userName;
-  };
 
-  window.addEventListener("hashchange", () => {
-    if (!window.ARBOR_HUB) setUser(readName());
-  });
+    factor = pickFactor();
 
-  window.addEventListener("message", event => {
-    if (event.source !== window.parent) return;
-    const data = event.data;
-    if (data && data.type === "arbor-user") setUser(data.username);
-  });
+    showCurrent();
+
+    if (document.fonts && document.fonts.ready) {
+
+        document.fonts.ready.then(() => {
+
+            if (!morphing) {
+                gBox.style.width = g1.offsetWidth + "px";
+            }
+
+        });
+
+    }
+
+    if (!reducedMotion) {
+        requestAnimationFrame(tick);
+    }
+
+    /* USERNAME UPDATES */
+
+    const setUser = name => {
+
+        userName = String(name || "").trim().split(/\s+/)[0] || "there";
+
+        gName.textContent = userName;
+
+    };
+
+    window.addEventListener("hashchange", () => {
+
+        if (!window.ARBOR_HUB) {
+            setUser(readName());
+        }
+
+    });
+
+    window.addEventListener("message", event => {
+
+        if (event.source !== window.parent) return;
+
+        const data = event.data;
+
+        if (data && data.type === "arbor-user") {
+            setUser(data.username);
+        }
+
+    });
+
 })();
 </script>
+
 </body>
 </html>
