@@ -1,10 +1,14 @@
+
 // ==UserScript==
-// @name         [2.1] • Arbor 𝖀𝓛𝓣ℛ𝓐!
+// @name         [2.2] • Arbor 𝖀𝓛𝓣ℛ𝓐!
 // @author       Brune, LLMs
+// @namespace    brungle.pages.dev
 // @description  Modified & Exuberant Arbor!
 
-// @namespace    brungle.pages.dev
-// @version      ALPHA.2.1
+// @version      2.2.Alpha
+
+// @updateURL    https://raw.githubusercontent.com/BruneCoding/ArborUltra/main/arbor-ultra.user.js
+// @downloadURL  https://raw.githubusercontent.com/BruneCoding/ArborUltra/main/arbor-ultra.user.js
 
 // @match        https://sir-henry-floyd-grammar-school.uk.arbor.education/*
 // @match        https://yell0wsuit.page/assets/games/subway-surfers/*
@@ -16,15 +20,12 @@
 // @match        https://games.poki.com/*
 // @match        https://*.gdn.poki.com/*
 
-
-
 // @run-at       document-start
 
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addElement
 
 // @connect      *
-
 // @connect      raw.githubusercontent.com
 // @connect      brunecoding.github.io
 // @connect      www.gstatic.com
@@ -38,18 +39,17 @@
 // @connect      cdn.discordapp.com
 // @connect      media.discordapp.net
 
-// @license      Adjourned MIT
-
-
-// @require      https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js
-// @require      https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js
-// @require      https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js
-
+// @license      MIT
 
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js
 // @require      https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js
 // @require      https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js
 // ==/UserScript==
+
+
+
+
+
 
 // This ScriptSet, from vBT2.0 onwards, uses AI assisted programming to strategically develop. As a result, it has now been switched to Adjourned MIT ( AI inclusion program ).
 // @ElementZero on Discord has rated this program to be 68.4% human coded ( via lines of code )
